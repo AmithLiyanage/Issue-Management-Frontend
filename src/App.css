@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+/* Replace Material CSS */
+.makeStyles-root-4 {
+  color: aqua;
+  width: 100% !important;
+}
