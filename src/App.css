@@ -37,8 +37,12 @@
   }
 }
 
-/* Replace Material CSS */
-.makeStyles-root-4 {
-  color: aqua;
-  width: 100% !important;
+.paper-arrange {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.paper-arrange-horizontal {
+  display: flex !important;
+  width: 100%;
 }
