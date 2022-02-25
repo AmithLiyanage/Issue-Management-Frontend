@@ -46,3 +46,7 @@
   display: flex !important;
   width: 100%;
 }
+
+.paper-inpt-fields {
+  margin: '10px 5px' !important;
+}

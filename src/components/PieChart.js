@@ -20,56 +20,29 @@ export default function PieChart() {
         { country: 'Others', area: 55 },
     ];
 
+    const [issueState, setIssueState] = useState([])
+
+    useEffect(() => {
+        fetch("http://localhost:8080/issue/getIssuesByStatus")
+            .then(res => res.json())
+            .then((result) => {
+                setIssueState(result);
+            })
+    })
+
     return (
         <Paper style={paperStyle2}>
             <Chart data={chartData} >
-                <PieSeries  valueField="area" argumentField="country" />
-                <Title text="Area of Countries" />
+                <PieSeries  valueField="state" argumentField="country" />
+                <Title text="Issue Status" />
                 <Animation />
             </Chart>
+            {/* <Chart data={chartData} >
+                <PieSeries  valueField="area" argumentField="country" />
+                <Title text="Issue Status" />
+                <Animation />
+            </Chart> */}
         </Paper>
     )
 
 }
-
-// const data = [
-//     { country: 'Russia', area: 12 },
-//     { country: 'Canada', area: 7 },
-//     { country: 'USA', area: 7 },
-//     { country: 'China', area: 7 },
-//     { country: 'Brazil', area: 6 },
-//     { country: 'Australia', area: 5 },
-//     { country: 'India', area: 2 },
-//     { country: 'Others', area: 55 },
-// ];
-
-// export default class Demo extends React.PureComponent {
-//     constructor(props) {
-//         super(props);
-
-//         this.state = {
-//             data,
-//         };
-//     }
-
-//     render() {
-//         const { data: chartData } = this.state;
-
-//         return (
-//             <Paper style={{width:'50%'}}>
-//                 {/* <Chart
-//                     data={chartData}
-//                 >
-//                     <PieSeries
-//                         valueField="area"
-//                         argumentField="country"
-//                     />
-//                     <Title
-//                         text="Area of Countries"
-//                     />
-//                     <Animation />
-//                 </Chart> */}
-//             </Paper>
-//         );
-//     }
-// }
