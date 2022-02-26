@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import IssuePieChart from './components/IssuePieChart';
 
 ReactDOM.render(
     <App />,
+    <IssuePieChart/>,
 
   // <React.StrictMode>
   //   <App />
