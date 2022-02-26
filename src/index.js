@@ -7,7 +7,6 @@ import IssuePieChart from './components/IssuePieChart';
 
 ReactDOM.render(
     <App />,
-    <IssuePieChart/>,
 
   // <React.StrictMode>
   //   <App />

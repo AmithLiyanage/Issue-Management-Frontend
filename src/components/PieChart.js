@@ -20,15 +20,15 @@ export default function PieChart() {
         { country: 'Others', area: 55 },
     ];
 
-    const [issueState, setIssueState] = useState([])
+    // const [issueState, setIssueState] = useState([])
 
-    useEffect(() => {
-        fetch("http://localhost:8080/issue/getIssuesByStatus")
-            .then(res => res.json())
-            .then((result) => {
-                setIssueState(result);
-            })
-    })
+    // useEffect(() => {
+    //     fetch("http://localhost:8080/issue/getIssuesByStatus")
+    //         .then(res => res.json())
+    //         .then((result) => {
+    //             setIssueState(result);
+    //         })
+    // })
 
     return (
         <Paper style={paperStyle2}>

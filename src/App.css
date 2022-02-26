@@ -50,3 +50,8 @@
 .paper-inpt-fields {
   margin: '10px 5px' !important;
 }
+
+#pieChartContainer {
+  max-width: 600px;
+  margin: 0 auto
+}
