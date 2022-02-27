@@ -30,6 +30,8 @@ export default function Issue() {
     })
 
     const editIssse = (e) => {
+
+        console.log("Clicked Update issue")
         e.preventDefault()
         const issue = { issueName, description, type }
         console.log(issue)
@@ -41,7 +43,7 @@ export default function Issue() {
         };
         fetch("http://localhost:8080/issue/addsg", requestOptions)
             .then(() => {
-                console.log("New Issue is Added")
+                console.log("Issue is Updated")
             })
     }
 
@@ -67,8 +69,10 @@ export default function Issue() {
                             </div>
                         </div>
                         <div style={{ width: "20%", direction: "rtl", display: "inline-grid" }}>
-                            <Button variant="contained" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }} onClick={editIssse}>Edit</Button>
-                            <Button variant="outlined" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }} onClick={editIssse}>Delete</Button>
+                            <Button variant="contained" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }}
+                                onClick={editIssse}>Edit</Button>
+                            <Button variant="outlined" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }}
+                                onClick={editIssse}>Delete</Button>
                         </div>
                     </Paper>
                 ))}
