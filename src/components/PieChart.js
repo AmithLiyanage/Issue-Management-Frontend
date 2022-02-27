@@ -1,48 +1,93 @@
-import * as React from 'react';
-import {
-    Chart,
-    PieSeries,
-    Title,
-} from '@devexpress/dx-react-chart-material-ui';
-import { Animation } from '@devexpress/dx-react-chart';
+import React, { PureComponent, useEffect, useState } from 'react';
+import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 
-export default function PieChart() {
+
+import Plot from 'react-plotly.js';
+
+export default function PieChartFN() {
     const paperStyle2 = { padding: '50px 20px', width: 'calc(50% - 60px)', margin: "20px auto" }
-    const chartData = [
-        { country: 'Russia', area: 12 },
-        { country: 'Canada', area: 7 },
-        { country: 'USA', area: 7 },
-        { country: 'China', area: 7 },
-        { country: 'Brazil', area: 6 },
-        { country: 'Australia', area: 5 },
-        { country: 'India', area: 2 },
-        { country: 'Others', area: 55 },
-    ];
+    const paperStyle = { padding: '24px 20px', width: 'calc(100%-40px)', margin: "20px auto" }
+    const [values, setValues] = useState([])
+    const [labels, setLabels] = useState([])
+    const [filteredIssues, setFilteredIssues] = useState([])
 
-    // const [issueState, setIssueState] = useState([])
+    useEffect(() => {
+        (async () => {
+            const res = await fetch("http://localhost:8080/issue/getStatusOfIssues")
+            const data = await res.json()
+            const names = data.map(obj => (obj.name))
+            const count = data.map(obj => (obj.count))
+            setValues(count)
+            setLabels(names)
+        })()
+    }, [])
 
-    // useEffect(() => {
-    //     fetch("http://localhost:8080/issue/getIssuesByStatus")
-    //         .then(res => res.json())
-    //         .then((result) => {
-    //             setIssueState(result);
-    //         })
-    // })
+    const checkLabels = async label => {
+        let res, response;
+        switch (label) {
+            case "OPEN":
+                res = await fetch("http://localhost:8080/issue/getOpenIssues");
+                response = await res.json()
+                break;
+            case "IN_PROGRESS":
+                res = await fetch("http://localhost:8080/issue/getInProgressIssues");
+                response = await res.json()
+
+                break;
+            case "WAITING_ON_CLIENT":
+                res = await fetch("http://localhost:8080/issue/getWaitingOnClientIssues");
+                response = await res.json()
+                break;
+            case "RESOLVED":
+                res = await fetch("http://localhost:8080/issue/getResolvedIssues");
+                response = await res.json()
+                break;
+            default:
+                console.log("checkLabels : " + checkLabels)
+                break;
+        }
+        console.log(response)
+        setFilteredIssues(response)
+    }
 
     return (
-        <Paper style={paperStyle2}>
-            <Chart data={chartData} >
-                <PieSeries  valueField="state" argumentField="country" />
-                <Title text="Issue Status" />
-                <Animation />
-            </Chart>
-            {/* <Chart data={chartData} >
-                <PieSeries  valueField="area" argumentField="country" />
-                <Title text="Issue Status" />
-                <Animation />
-            </Chart> */}
-        </Paper>
-    )
+        <Container >
+            <div className='paper-arrange-horizontal'>
+                <Paper elevation={3} style={paperStyle2}>
+                    <Plot
+                        data={[
+                            {
+                                values: values,
+                                labels: labels,
+                                type: 'pie'
+                            },
+                        ]}
+                        layout={{ width: 400, height: 300, title: 'Issue Pie Chart' }}
+
+                        //onClick={(e) => console.log(e.points[0].label)}
+                        onClick={async (e) => await checkLabels(e.points[0].label)}
+                    />
+                </Paper>
+
+                <Paper elevation={3} style={paperStyle2}>
+                    <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>Issues : </h2>
+                    {filteredIssues.map(issue => (
+                        <Paper elevation={6} style={{ margin: "8px", padding: "16px", textAlign: "left" }} key={issue.issueId}>
+                            <div style={{ display: 'flex', marginBottom: "10px" }}>
+                                <div style={{ width: "50%", textAlign: "left" }}>#{issue.issueId}   {issue.issueName}</div>
+                                <div style={{ width: "50%", textAlign: "end" }}>{issue.type}</div>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: "60%", textAlign: "left" }}>{issue.description}</div>
+                                <div style={{ width: "40%", textAlign: "end" }}>{issue.state}</div>
+                            </div>
+                        </Paper>
+                    ))}
+                </Paper>
+            </div>
+        </Container>
+    );
 
 }

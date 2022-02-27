@@ -9,10 +9,7 @@ function App() {
     return (
         <div className="App" >
             <AppBar />
-            {/* <PieChart /> */}
-            <div style={{ margin: "8px", color: 'blueviolet', height: "400px" }}>
-                <IssuePieChart />
-            </div>
+            <PieChart />
             <div id="pieChartContainer"></div>
             <div className='paper-arrange-horizontal'>
                 <AddIssue />

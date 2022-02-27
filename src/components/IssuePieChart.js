@@ -1,5 +1,8 @@
-import React, { PureComponent, useEffect, useState } from 'react';
-import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
+//https://recharts.org/en-US/examples
+
+import React, { PureComponent, useEffect, useState, useCallback  } from 'react';
+import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import Issue from './Issue';
 
 //new start
 // function ab() {
@@ -25,6 +28,8 @@ const data = [
     { name: 'RESOLVED', count: 1 },
 ];
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
 
 const renderActiveShape = (props) => {
     const RADIAN = Math.PI / 180;
@@ -39,7 +44,7 @@ const renderActiveShape = (props) => {
     const ey = my;
     const textAnchor = cos >= 0 ? 'start' : 'end';
 
-   
+
     return (
         <g>
             <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
@@ -66,7 +71,7 @@ const renderActiveShape = (props) => {
             />
             <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
             <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`PV ${count}`}</text>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${count} Issue(s)`}</text>
             <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
                 {`(Rate ${(percent * 100).toFixed(2)}%)`}
             </text>
@@ -76,7 +81,6 @@ const renderActiveShape = (props) => {
 
 export default class Example extends PureComponent {
     static demoUrl = 'https://codesandbox.io/s/pie-chart-with-customized-active-shape-y93si';
-
 
     state = {
         activeIndex: 0,
@@ -100,12 +104,17 @@ export default class Example extends PureComponent {
                         cy="50%"
                         innerRadius={100}
                         outerRadius={120}
-                        fill="#8884d8"
+                        fill={COLORS[0]}
                         dataKey="count"
                         onMouseEnter={this.onPieEnter}
-                    />
+                    >
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
                 </PieChart>
             </ResponsiveContainer>
+            
         );
     }
 }
