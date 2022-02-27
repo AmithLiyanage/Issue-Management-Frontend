@@ -4,6 +4,7 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import { Button } from '@mui/material';
 
 const data = [
     { name: 'Group A', value: 400 },
@@ -28,41 +29,50 @@ export default function Issue() {
             })
     })
 
+    const editIssse = (e) => {
+        e.preventDefault()
+        const issue = { issueName, description, type }
+        console.log(issue)
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(issue)
+        };
+        fetch("http://localhost:8080/issue/addsg", requestOptions)
+            .then(() => {
+                console.log("New Issue is Added")
+            })
+    }
+
     return (
         <Container>
             <Paper elevation={3} style={paperStyle}>
                 <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>All Issues</h2>
                 {issues.map(issue => (
-                    <Paper elevation={6} style={{ margin: "8px", padding: "16px", textAlign: "left" }} key={issue.issueId}>
-                        <div style={{ display: 'flex', marginBottom: "10px" }}>
-                            <div style={{ width: "50%", textAlign: "left" }}>#{issue.issueId}   {issue.issueName}</div>
-                            <div style={{ width: "50%", textAlign: "end" }}>{issue.type}</div>
+                    <Paper elevation={6} style={{ margin: "8px", padding: "16px", textAlign: "left", display: 'flex' }} key={issue.issueId}>
+                        <div style={{ width: "80%" }}>
+                            <div style={{ display: 'flex', margin: "5px 0" }}>
+                                <div style={{ width: "60%", textAlign: "left", display: 'flex' }}>
+                                    <div>#{issue.issueId}</div>
+                                    <div style={{ fontWeight: "bold", marginLeft: "10px" }}> {issue.issueName}</div>
+                                </div>
+                                <div style={{ width: "40%", textAlign: "end", color: "blueviolet", fontWeight: "bold" }}>{issue.state}</div>
+                            </div>
+                            <div style={{ display: 'flex', margin: "5px 0" }}>
+                                <div style={{ width: "60%", textAlign: "left" }}>{issue.type}</div>
+                            </div>
+                            <div style={{ display: 'flex', margin: "5px 0" }}>
+                                <div style={{ width: "60%", textAlign: "left" }}>{issue.description}</div>
+                            </div>
                         </div>
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: "60%", textAlign: "left" }}>{issue.description}</div>
-                            <div style={{ width: "40%", textAlign: "end" }}>{issue.state}</div>
+                        <div style={{ width: "20%", direction: "rtl", display: "inline-grid" }}>
+                            <Button variant="contained" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }} onClick={editIssse}>Edit</Button>
+                            <Button variant="outlined" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }} onClick={editIssse}>Delete</Button>
                         </div>
                     </Paper>
                 ))}
             </Paper>
-            {/* <Paper>
-                <PieChart width={800} height={400} onMouseEnter={this.onPieEnter}>
-                    <Pie
-                        data={data}
-                        cx={120}
-                        cy={200}
-                        innerRadius={60}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        paddingAngle={5}
-                        dataKey="value"
-                    >
-                        {data.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                    </Pie>
-                </PieChart>
-            </Paper> */}
         </Container>
     );
 }

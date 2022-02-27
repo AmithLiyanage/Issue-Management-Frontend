@@ -85,7 +85,7 @@ export default function AddIssue() {
                         </FormControl>
                         {/* default state need to set as OPEN */}
                         <Stack spacing={2} direction="rtl" style={{ margin: 'auto', direction: 'rtl' }}>
-                            <Button variant="contained" color="secondary" onClick={handleClick}>Create</Button>
+                            <Button variant="contained" color="primary" onClick={handleClick}>Create</Button>
                         </Stack>
                     </Box>
                 </form>
