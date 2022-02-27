@@ -10,20 +10,33 @@ import { Button } from '@mui/material';
 export default function PieChartFN() {
     const paperStyle2 = { padding: '24px 20px', width: 'calc(50% - 40px)', margin: "20px 20px" }
     const paperStyle = { padding: '24px 20px', width: 'calc(100%-40px)', margin: "20px auto" }
+    var data = [];
     const [values, setValues] = useState([])
     const [labels, setLabels] = useState([])
+    const [issuesByState, setIssuesByState] = useState([])
     const [filteredIssues, setFilteredIssues] = useState([])
 
+    //custom data edit in ui
+    // useEffect(() => {
+    //     (async () => {
+    //         const res = await fetch("http://localhost:8080/issue/getStatusOfIssues")
+    //         const data = await res.json()
+    //         const names = data.map(obj => (obj.name))
+    //         const count = data.map(obj => (obj.count))
+    //         setValues(count)
+    //         setLabels(names)
+    //     })()
+    //     console.log("from data"+data)
+    // }, [])
+
     useEffect(() => {
-        (async () => {
-            const res = await fetch("http://localhost:8080/issue/getStatusOfIssues")
-            const data = await res.json()
-            const names = data.map(obj => (obj.name))
-            const count = data.map(obj => (obj.count))
-            setValues(count)
-            setLabels(names)
-        })()
-    }, [])
+        fetch("http://localhost:8080/issue/getStatusOfIssues")
+            .then(res => res.json())
+            .then((result) => {
+                setIssuesByState(result);
+            })
+    });
+    
 
     const editIssse = (e) => {
     }
@@ -61,13 +74,14 @@ export default function PieChartFN() {
             <div className='paper-arrange-horizontal'>
                 <Paper elevation={3} style={paperStyle2}>
                     <Plot
-                        data={[
-                            {
-                                values: values,
-                                labels: labels,
-                                type: 'pie'
-                            },
-                        ]}
+                        // data={[
+                        //     {
+                        //         values: values,
+                        //         labels: labels,
+                        //         type: 'pie'
+                        //     },
+                        // ]}
+                        data = {[issuesByState]}
                         layout={{ width: 500, height: 400, title: 'Issue Pie Chart' }}
 
                         //onClick={(e) => console.log(e.points[0].label)}

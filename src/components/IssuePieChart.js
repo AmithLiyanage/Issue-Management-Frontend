@@ -2,24 +2,6 @@
 
 import React, { PureComponent, useEffect, useState, useCallback  } from 'react';
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
-import Issue from './Issue';
-
-//new start
-// function ab() {
-//     const [issueState, setIssueState] = useState([])
-
-//     useEffect(() => {
-//         fetch("http://localhost:8080/issue/getIssuesByStatus")
-//             .then(res => res.json())
-//             .then((result) => {
-//                 setIssueState(result);
-//             })
-//     })
-
-//     this.Example = function () {
-//     }
-// }
-//new end
 
 const data = [
     { name: 'OPEN', count: 7 },
