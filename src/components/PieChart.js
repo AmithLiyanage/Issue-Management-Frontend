@@ -5,7 +5,10 @@ import Paper from '@mui/material/Paper';
 
 
 import Plot from 'react-plotly.js';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import HistoryIcon from '@mui/icons-material/History';
 
 export default function PieChartFN() {
     const paperStyle2 = { padding: '24px 20px', width: 'calc(50% - 40px)', margin: "20px 20px" }
@@ -35,11 +38,8 @@ export default function PieChartFN() {
             .then((result) => {
                 setIssuesByState(result);
             })
-    });
-    
+    },[]);
 
-    const editIssse = (e) => {
-    }
 
     const checkLabels = async label => {
         let res, response;
@@ -81,7 +81,7 @@ export default function PieChartFN() {
                         //         type: 'pie'
                         //     },
                         // ]}
-                        data = {[issuesByState]}
+                        data={[issuesByState]}
                         layout={{ width: 500, height: 400, title: 'Issue Pie Chart' }}
 
                         //onClick={(e) => console.log(e.points[0].label)}
@@ -93,25 +93,38 @@ export default function PieChartFN() {
                     <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>Issues : </h2>
                     <div id="" style={{ overflow: "scroll", height: "400px" }}>
                         {filteredIssues.map(issue => (
-                            <Paper elevation={6} style={{ margin: "8px", padding: "16px", textAlign: "left", display: 'flex' }} key={issue.issueId}>
-                                <div style={{ width: "80%" }}>
-                                    <div style={{ display: 'flex', margin: "5px 0" }}>
-                                        <div style={{ width: "60%", textAlign: "left", display: 'flex' }}>
-                                            <div>#{issue.issueId}</div>
-                                            <div style={{ fontWeight: "bold", marginLeft: "10px" }}> {issue.issueName}</div>
+                            <Paper elevation={6} style={{ margin: "8px", textAlign: "left", display: 'flex' }} key={issue.issueId}>
+                                <div style={{ width: "100%" }}>
+                                    <div style={{ display: 'flex' }}>
+                                        <div style={{ width: "50%", textAlign: "left", display: 'flex', padding: "8px" }}>
+                                            <div style={{ padding: "inherit" }}>#{issue.issueId}</div>
+                                            <div style={{ fontWeight: "bold", padding: "inherit" }}> {issue.issueName}</div>
                                         </div>
-                                        <div style={{ width: "40%", textAlign: "end", color: "blueviolet", fontWeight: "bold" }}>{issue.state}</div>
+                                        <div style={{ width: "50%", display: 'flex', direction: "rtl", padding: "8px" }}>
+                                            <IconButton aria-label="history" style={{ marginRight: "8px" }}>
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                            <IconButton aria-label="delete">
+                                                <HistoryIcon fontSize="small" />
+                                            </IconButton>
+                                            <IconButton aria-label="delete">
+                                                <EditIcon fontSize="small" />
+                                            </IconButton>
+                                            <div style={{ color: "blueviolet", textAlign: "end", fontWeight: "bold", padding: "inherit" }}>
+                                                {issue.state}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div style={{ display: 'flex', margin: "5px 0" }}>
-                                        <div style={{ width: "60%", textAlign: "left" }}>{issue.type}</div>
+                                    <div style={{ display: 'flex' }}>
+                                        <div style={{ width: "50%", textAlign: "left", display: 'flex', padding: "0 8px" }}>
+                                            <div style={{ padding: "inherit" }}>{issue.type}</div>
+                                        </div>
                                     </div>
-                                    <div style={{ display: 'flex', margin: "5px 0" }}>
-                                        <div style={{ width: "60%", textAlign: "left" }}>{issue.description}</div>
+                                    <div style={{ display: 'flex' }}>
+                                        <div style={{ width: "60%", textAlign: "left", display: 'flex', padding: "0 8px 8px 8px" }}>
+                                            <div style={{ padding: "inherit" }}>{issue.description}</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div style={{ width: "20%", direction: "rtl", display: "inline-grid" }}>
-                                    <Button variant="contained" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }} onClick={editIssse}>Edit</Button>
-                                    <Button variant="outlined" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }} onClick={editIssse}>Delete</Button>
                                 </div>
                             </Paper>
                         ))}

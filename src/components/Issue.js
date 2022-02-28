@@ -1,82 +1,111 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import HistoryIcon from '@mui/icons-material/History';
+
+import 'react-toastify/dist/ReactToastify.css';
+import EditDialog from './EditDialog';
 
 const data = [
-    { name: 'Group A', value: 400 },
-    { name: 'Group B', value: 300 },
-    { name: 'Group C', value: 300 },
-    { name: 'Group D', value: 200 },
+  { name: 'Group A', value: 400 },
+  { name: 'Group B', value: 300 },
+  { name: 'Group C', value: 300 },
+  { name: 'Group D', value: 200 },
 ];
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function Issue() {
-    const paperStyle = { padding: '24px 20px', width: 'calc(100%-40px)', margin: "20px auto" }
-    const [issueName, setIssueName] = useState('')
-    const [description, setDescription] = useState('')
-    const [type, setType] = useState('')
-    const [issues, setIssues] = useState([])
+  const paperStyle = { padding: '24px 20px', width: 'calc(100%-40px)', margin: "20px auto" }
+  const [issueName, setIssueName] = useState('')
+  const [description, setDescription] = useState('')
+  const [type, setType] = useState('')
 
-    useEffect(() => {
-        fetch("http://localhost:8080/issue/getAllIssues")
-            .then(res => res.json())
-            .then((result) => {
-                setIssues(result);
-            })
-    })
+  const [ed_issueID, setEDIssueID] = useState(null)
+  const [ed_issueName, setEDIssueName] = useState(null)
+  const [ed_issueState, setEDIssueState] = useState(null)
+  const [opened, setOpened] = useState(false)
 
-    const editIssse = (e) => {
+  const [issues, setIssues] = useState([])
 
-        console.log("Clicked Update issue")
-        e.preventDefault()
-        const issue = { issueName, description, type }
-        console.log(issue)
+  useEffect(() => {
+    fetch("http://localhost:8080/issue/getAllIssues")
+      .then(res => res.json())
+      .then((result) => {
+        setIssues(result);
+      })
+  }, [])//single call
 
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(issue)
-        };
-        fetch("http://localhost:8080/issue/addsg", requestOptions)
-            .then(() => {
-                console.log("Issue is Updated")
-            })
-    }
 
-    return (
-        <Container>
-            <Paper elevation={3} style={paperStyle}>
-                <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>All Issues</h2>
-                {issues.map(issue => (
-                    <Paper elevation={6} style={{ margin: "8px", padding: "16px", textAlign: "left", display: 'flex' }} key={issue.issueId}>
-                        <div style={{ width: "80%" }}>
-                            <div style={{ display: 'flex', margin: "5px 0" }}>
-                                <div style={{ width: "60%", textAlign: "left", display: 'flex' }}>
-                                    <div>#{issue.issueId}</div>
-                                    <div style={{ fontWeight: "bold", marginLeft: "10px" }}> {issue.issueName}</div>
-                                </div>
-                                <div style={{ width: "40%", textAlign: "end", color: "blueviolet", fontWeight: "bold" }}>{issue.state}</div>
-                            </div>
-                            <div style={{ display: 'flex', margin: "5px 0" }}>
-                                <div style={{ width: "60%", textAlign: "left" }}>{issue.type}</div>
-                            </div>
-                            <div style={{ display: 'flex', margin: "5px 0" }}>
-                                <div style={{ width: "60%", textAlign: "left" }}>{issue.description}</div>
-                            </div>
-                        </div>
-                        <div style={{ width: "20%", direction: "rtl", display: "inline-grid" }}>
-                            <Button variant="contained" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }}
-                                onClick={editIssse}>Edit</Button>
-                            <Button variant="outlined" color="primary" direction="rtl" style={{ margin: '0 0 8px 16px', direction: 'rtl' }}
-                                onClick={editIssse}>Delete</Button>
-                        </div>
-                    </Paper>
-                ))}
-            </Paper>
-        </Container>
-    );
+  const deleteIssue = (deleteId) => {
+    const requestOptions = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    };
+    fetch("http://localhost:8080/issue/deleteIssue/" + deleteId, requestOptions)
+      .then(() => {
+        console.log("Issue "+deleteId+" is Deleted")
+        fetch("http://localhost:8080/issue/getAllIssues")//to refresh all issues after delete
+          .then(res => res.json())
+          .then((result) => {
+            setIssues(result);
+            console.log("piechart refreshed")
+          })
+      })
+  }
+
+  const editIssse = (ed_issueID, ed_issueName, ed_issueState) => {
+    setEDIssueID(ed_issueID)
+    setEDIssueName(ed_issueName)
+    setEDIssueState(ed_issueState)
+    setOpened(true)
+  }
+
+  return (
+    <Container>
+      <Paper elevation={3} style={paperStyle}>
+        <EditDialog ed_issueID={ed_issueID} ed_issueName={ed_issueName} ed_issueState={ed_issueState} opened={opened} setOpened={setOpened} />
+        <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>All Issues</h2>
+        {issues.map(issue => (
+          <Paper elevation={6} style={{ margin: "8px", textAlign: "left", display: 'flex' }} key={issue.issueId}>
+            <div style={{ width: "100%" }}>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: "50%", textAlign: "left", display: 'flex', padding: "8px" }}>
+                  <div style={{ padding: "inherit" }}>#{issue.issueId}</div>
+                  <div style={{ fontWeight: "bold", padding: "inherit" }}> {issue.issueName}</div>
+                </div>
+                <div style={{ width: "50%", display: 'flex', direction: "rtl", padding: "8px" }}>
+                  <IconButton aria-label="history" style={{ marginRight: "8px" }} onClick={() => deleteIssue(issue.issueId)} >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton aria-label="delete">
+                    <HistoryIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton aria-label="delete" onClick={() => editIssse(issue.issueId, issue.issueName, issue.state)}>
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <div style={{ color: "blueviolet", textAlign: "end", fontWeight: "bold", padding: "inherit" }}>
+                    {issue.state}
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: "50%", textAlign: "left", display: 'flex', padding: "0 8px" }}>
+                  <div style={{ padding: "inherit" }}>{issue.type}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: "60%", textAlign: "left", display: 'flex', padding: "0 8px 8px 8px" }}>
+                  <div style={{ padding: "inherit" }}>{issue.description}</div>
+                </div>
+              </div>
+            </div>
+          </Paper>
+        ))}
+      </Paper>
+    </Container>
+  );
 }

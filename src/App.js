@@ -9,7 +9,8 @@ function App() {
     return (
         <div className="App" >
             <AppBar />
-            <PieChart />
+            <div className='paper-arrange-horizontal'><PieChart /></div>
+            
             <div id="pieChartContainer"></div>
             <div className='paper-arrange-horizontal'>
                 <AddIssue />

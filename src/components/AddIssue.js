@@ -45,7 +45,7 @@ export default function AddIssue() {
                     <Box
                         component="form"
                         sx={{
-                            '& > :not(style)': { m: 1, width: '80%', margin: '10px 5px', padding: '10px' },
+                            '& > :not(style)': { m: 1, width: '80%', margin: '10px 5px' },
                         }}
                         noValidate
                         autoComplete="off"
@@ -89,49 +89,6 @@ export default function AddIssue() {
                         </Stack>
                     </Box>
                 </form>
-
-                {/* <form style={{ margin: '10px 5px', padding: '10px' }} noValidate autoComplete="off">
-                    <TextField
-                        id="outlined-basic"
-                        value={issueName}
-                        onChange={(e) => setIssueName(e.target.value)}
-                        label="Issue Name"
-                        variant="outlined"
-                        fullWidth
-                        className='paper-inpt-fields' />
-                    <TextField
-                        id="outlined-basic"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        label="Description"
-                        variant="outlined"
-                        fullWidth
-                        className='paper-inpt-fields'
-                    />
-                    <FormControl variant="outlined" fullWidth className='paper-inpt-fields'>
-                        <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
-                        
-                        <Select
-
-                            labelId="demo-simple-select-outlined-label"
-                            id="demo-simple-select-outlined"
-                            value={type}
-                            onChange={(e) => setType(e.target.value)}
-                            label="Type"
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-                            <MenuItem value={"BUG"}>Bug</MenuItem>
-                            <MenuItem value={"QUESTION"}>Question</MenuItem>
-                            <MenuItem value={"IMPROVEMENT"}>Improvement</MenuItem>
-                        </Select>
-                    </FormControl>
-                    
-                    <Button variant="contained" color="secondary" onClick={handleClick} style={{ margin: "24px 0" }} >
-                        Create
-                    </Button>
-                </form> */}
             </Paper>
         </Container>
     );
