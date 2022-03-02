@@ -1,24 +1,37 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import * as React from "react";
+import { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+} from "@mui/material";
 
-export default function FormDialog({ ed_issueID, ed_issueName, ed_issueState, opened, setOpened }) {
+export default function FormDialog({
+  ed_issueID,
+  ed_issueName,
+  ed_issueState,
+  opened,
+  setOpened,
+}) {
   const [open, setOpen] = React.useState(opened);
-  const [issueRes, setRes] = useState([])
+  const [issueRes, setRes] = useState([]);
   var data = [];
-  const [issueOldIssue, setOldIssue] = useState([])
-  const [availbeStatus, setAvailabeStatus] = useState([])
+  const [issueOldIssue, setOldIssue] = useState([]);
+  const [availbeStatus, setAvailabeStatus] = useState([]);
 
   // useEffect(() => {
   //   console.log("ed_issueID : "+ed_issueID)
-  //   fetch("http://localhost:8080/issue/getIssueForUpdate/"+ed_issueID)
+  //   fetch("issue/getIssueForUpdate/"+ed_issueID)
   //     .then(res => res.json())
   //     .then((result) => {
   //       setOldData(result);
@@ -28,7 +41,7 @@ export default function FormDialog({ ed_issueID, ed_issueName, ed_issueState, op
 
   //get data after opened
   // React.useEffect(() => {
-  //   fetch("http://localhost:8080/issue/getIssueForUpdate/" + ed_issueID)
+  //   fetch("issue/getIssueForUpdate/" + ed_issueID)
   //     .then(res => res.json())
   //     .then((result) => {
   //       setRes(result);
@@ -39,56 +52,47 @@ export default function FormDialog({ ed_issueID, ed_issueName, ed_issueState, op
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("http://localhost:8080/issue/getIssueForUpdate/" + ed_issueID)
-      .then(res => res.json())
-      .then((result) => {
-        setRes(result);
-      })
-      const data = await res.json()
-      const newStatus = data.map(obj => (obj.availableStatus))
-      const oldIssue = data.map(obj => (obj.count))
-      console.log("from bc : " + newStatus)
-      console.log("from bc : " + oldIssue)
-      setAvailabeStatus(newStatus)
-      setOldIssue(oldIssue)
-    })()
-    console.log("from data" + data)
-    setOpen(opened)
-  }, [opened])
+      if (!ed_issueID) return;
+      const res = await fetch("issue/getIssueForUpdate/" + ed_issueID);
+      const data = await res.json();
+      setRes(data);
+      setAvailabeStatus(data.availableStatus);
+      setOldIssue(data.issue);
+    })();
 
+    setOpen(opened);
+  }, [ed_issueID, opened]);
 
   React.useEffect(() => {
-    console.log(ed_issueID)
-  }, [ed_issueID])
+    console.log(ed_issueID);
+  }, [ed_issueID]);
 
   React.useEffect(() => {
-    console.log(ed_issueName)
-  }, [ed_issueName])
+    console.log(ed_issueName);
+  }, [ed_issueName]);
 
   React.useEffect(() => {
-    console.log(ed_issueState)
-  }, [ed_issueState])
-
+    console.log(ed_issueState);
+  }, [ed_issueState]);
 
   const handleClose = () => {
-    setOpened(false)
+    setOpened(false);
   };
 
   const handleClick = (e) => {
-    e.preventDefault()
-    const issue = {  }
-    console.log(issue)
+    e.preventDefault();
+    const issue = {};
+    console.log(issue);
 
     const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(issue)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(issue),
     };
-    fetch("http://localhost:8080/issue/add", requestOptions)
-        .then(() => {
-            console.log("New Issue is Added")
-        })
-}
+    fetch("issue/add", requestOptions).then(() => {
+      console.log("New Issue is Added");
+    });
+  };
 
   return (
     <div>
@@ -108,11 +112,15 @@ export default function FormDialog({ ed_issueID, ed_issueName, ed_issueState, op
             fullWidth
             variant="standard"
           /> */}
-          <form style={{ margin: '10px 0px', padding: '10px 10' }} noValidate autoComplete="off">
+          <form
+            style={{ margin: "10px 0px", padding: "10px 10" }}
+            noValidate
+            autoComplete="off"
+          >
             <Box
               component="form"
               sx={{
-                '& > :not(style)': { m: 1, width: '100%', margin: '10px 5px' },
+                "& > :not(style)": { m: 1, width: "100%", margin: "10px 5px" },
               }}
               noValidate
               autoComplete="off"
@@ -125,7 +133,7 @@ export default function FormDialog({ ed_issueID, ed_issueName, ed_issueState, op
                 type="text"
                 variant="outlined"
                 fullWidth
-                className='paper-inpt-fields'
+                className="paper-inpt-fields"
               />
               <TextField
                 id="outlined-basic"
@@ -135,7 +143,7 @@ export default function FormDialog({ ed_issueID, ed_issueName, ed_issueState, op
                 type="text"
                 variant="outlined"
                 fullWidth
-                className='paper-inpt-fields'
+                className="paper-inpt-fields"
               />
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Type</InputLabel>
@@ -144,19 +152,30 @@ export default function FormDialog({ ed_issueID, ed_issueName, ed_issueState, op
                   id="demo-simple-select"
                   value={ed_issueState}
                   label="Next State"
-                // onChange={(e) => setType(e.target.value)}
+                  // onChange={(e) => setType(e.target.value)}
                 >
                   <MenuItem value={ed_issueState}>{ed_issueState}</MenuItem>
-                  <MenuItem value={"QUESTION"}>Question</MenuItem>
-                                <MenuItem value={"IMPROVEMENT"}>Improvement</MenuItem>
+                  {availbeStatus.map((i) => (
+                    <MenuItem value={i}>{i}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               {/* default state need to set as OPEN */}
-              <Stack spacing={2} direction="rtl" style={{ margin: 'auto', direction: 'rtl' }}>
-                            <Button variant="contained" color="primary" onClick={handleClick}>Create</Button>
-                        </Stack>
+              <Stack
+                spacing={2}
+                direction="rtl"
+                style={{ margin: "auto", direction: "rtl" }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleClick}
+                >
+                  Create
+                </Button>
+              </Stack>
             </Box>
-            </form>
+          </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
