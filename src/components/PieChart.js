@@ -8,6 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import HistoryIcon from "@mui/icons-material/History";
 import { getPieData } from "../store/actions";
 import { useDispatch, useSelector } from "react-redux";
+import IssueComponent from "./Issue";
 
 export default function PieChartFN() {
   const dispatch = useDispatch();
@@ -70,11 +71,12 @@ export default function PieChartFN() {
 
   return (
     <Container>
-      <div className="paper-arrange-horizontal">
+      {/* <div className="paper-arrange-horizontal"> */}
         <Paper elevation={3} style={paperStyle2}>
           <Plot
             data={[issuesByState?.pieChartData]}
             layout={{ width: 500, height: 400, title: "Issue Pie Chart" }}
+            onClick={async (e) => await checkLabels(e.points[0].label)}//pie chart on click()
             onClick={async (e) => await checkLabels(e.points[0].label)}//pie chart on click()
           />
         </Paper>
@@ -169,7 +171,7 @@ export default function PieChartFN() {
             ))}
           </div>
         </Paper>
-      </div>
+      {/* </div> */}
     </Container>
   );
 }
