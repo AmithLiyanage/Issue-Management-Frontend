@@ -7,18 +7,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import HistoryIcon from "@mui/icons-material/History";
 
-import "react-toastify/dist/ReactToastify.css";
+import AddIssueDialog from "./AddIssueDialog";
+import HistoryIssueDialog from "./HistoryDialog";
 import EditDialog from "./EditDialog";
 import { getPieData } from "../store/actions";
 import { useDispatch } from "react-redux";
 
-const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+//const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function Issue() {
   const dispatch = useDispatch();
@@ -27,24 +22,45 @@ export default function Issue() {
     width: "calc(100%-40px)",
     margin: "20px auto",
   };
-  const [issueName, setIssueName] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState("");
 
+  //add dialog
+  const [addIssueData, setAddIssues] = useState([]);
+  const [openedAdd, setAddOpened] = useState(false);
+  const [openedHistory, setHistoryOpened] = useState(false);
+
+  //edit/history dialog
+  const [issues, setIssues] = useState([]);
   const [ed_issueID, setEDIssueID] = useState(null);
   const [ed_issueName, setEDIssueName] = useState(null);
   const [ed_issueState, setEDIssueState] = useState(null);
   const [opened, setOpened] = useState(false);
 
-  const [issues, setIssues] = useState([]);
-
   useEffect(() => {
-    fetch("issue/getAllIssues")
+    fetch("/issue/getAllIssues")
       .then((res) => res.json())
       .then((result) => {
         setIssues(result);
       });
   }, []); //single call
+
+  const addIssse = () => {
+    console.log("trying to add")
+    setAddOpened(true);
+  };
+
+  const historyIssse = (ed_issueID) => {
+    console.log("trying get " + ed_issueID + " history")
+    setEDIssueID(ed_issueID);
+    setHistoryOpened(true);
+  };
+
+  const editIssse = (ed_issueID, ed_issueName, ed_issueState) => {
+    setEDIssueID(ed_issueID);
+    setEDIssueName(ed_issueName);
+    setEDIssueState(ed_issueState);
+    setOpened(true);
+  };
+
 
   const deleteIssue = (deleteId) => {
     const requestOptions = {
@@ -63,16 +79,18 @@ export default function Issue() {
     });
   };
 
-  const editIssse = (ed_issueID, ed_issueName, ed_issueState) => {
-    setEDIssueID(ed_issueID);
-    setEDIssueName(ed_issueName);
-    setEDIssueState(ed_issueState);
-    setOpened(true);
-  };
-
   return (
     <Container>
       <Paper elevation={3} style={paperStyle}>
+        <AddIssueDialog
+          opened={openedAdd}
+          setOpened={setAddOpened}
+        />
+        <HistoryIssueDialog
+          ed_issueID={ed_issueID}
+          opened={openedHistory}
+          setOpened={setHistoryOpened}
+        />
         <EditDialog
           ed_issueID={ed_issueID}
           ed_issueName={ed_issueName}
@@ -83,6 +101,10 @@ export default function Issue() {
         <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>
           All Issues
         </h2>
+        <Button variant="contained" color="primary"
+          onClick={() => addIssse()}>
+          Add Issue
+        </Button>
         {issues.map((issue) => (
           <Paper
             elevation={6}
@@ -120,7 +142,10 @@ export default function Issue() {
                   >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
-                  <IconButton aria-label="delete">
+                  <IconButton aria-label="history"
+                    onClick={() =>
+                      historyIssse(issue.issueId)
+                    }>
                     <HistoryIcon fontSize="small" />
                   </IconButton>
                   <IconButton

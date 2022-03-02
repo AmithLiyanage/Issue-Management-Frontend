@@ -68,31 +68,29 @@ export default function FormDialog({
   }, [ed_issueID]);
 
   React.useEffect(() => {
-    console.log(ed_issueName);
   }, [ed_issueName]);
 
   React.useEffect(() => {
-    console.log(ed_issueState);
   }, [ed_issueState]);
 
   const handleClose = () => {
     setOpened(false);
   };
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    const issue = {};
-    console.log(issue);
+  // const handleClick = (e) => {
+  //   e.preventDefault();
+  //   const issue = {};
+  //   console.log(issue);
 
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(issue),
-    };
-    fetch("issue/add", requestOptions).then(() => {
-      console.log("New Issue is Added");
-    });
-  };
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(issue),
+  //   };
+  //   fetch("issue/add", requestOptions).then(() => {
+  //     console.log("New Issue is Added");
+  //   });
+  // };
 
   return (
     <div>
@@ -102,16 +100,6 @@ export default function FormDialog({
           <DialogContentText>
             #{ed_issueID} {ed_issueName} {ed_issueState}
           </DialogContentText>
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            value={ed_issueName}
-            label="Issue Name"
-            type="email"
-            fullWidth
-            variant="standard"
-          /> */}
           <form
             style={{ margin: "10px 0px", padding: "10px 10" }}
             noValidate
@@ -137,7 +125,7 @@ export default function FormDialog({
               />
               <TextField
                 id="outlined-basic"
-                value="des"
+                value={"des"}
                 // onChange={(e) => setDescription(e.target.value)}
                 label="Description"
                 type="text"
@@ -152,7 +140,7 @@ export default function FormDialog({
                   id="demo-simple-select"
                   value={ed_issueState}
                   label="Next State"
-                  // onChange={(e) => setType(e.target.value)}
+                // onChange={(e) => setType(e.target.value)}
                 >
                   <MenuItem value={ed_issueState}>{ed_issueState}</MenuItem>
                   {availbeStatus.map((i) => (
@@ -161,7 +149,7 @@ export default function FormDialog({
                 </Select>
               </FormControl>
               {/* default state need to set as OPEN */}
-              <Stack
+              {/* <Stack
                 spacing={2}
                 direction="rtl"
                 style={{ margin: "auto", direction: "rtl" }}
@@ -173,7 +161,7 @@ export default function FormDialog({
                 >
                   Create
                 </Button>
-              </Stack>
+              </Stack> */}
             </Box>
           </form>
         </DialogContent>

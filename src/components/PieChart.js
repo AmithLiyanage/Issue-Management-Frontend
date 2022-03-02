@@ -73,17 +73,9 @@ export default function PieChartFN() {
       <div className="paper-arrange-horizontal">
         <Paper elevation={3} style={paperStyle2}>
           <Plot
-            // data={[
-            //     {
-            //         values: values,
-            //         labels: labels,
-            //         type: 'pie'
-            //     },
-            // ]}
             data={[issuesByState?.pieChartData]}
             layout={{ width: 500, height: 400, title: "Issue Pie Chart" }}
-            //onClick={(e) => console.log(e.points[0].label)}
-            onClick={async (e) => await checkLabels(e.points[0].label)}
+            onClick={async (e) => await checkLabels(e.points[0].label)}//pie chart on click()
           />
         </Paper>
 

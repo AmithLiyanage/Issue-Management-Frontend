@@ -7,41 +7,65 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useDispatch } from "react-redux";
 import {
   Box,
+  Container,
   FormControl,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   Stack,
 } from "@mui/material";
 
-export default function FormDialog({ ed_issueID }) {
+export default function FormDialogHistory({
+  ed_issueID,
+  opened,
+  setOpened }) {
+    console.log("inside history",ed_issueID,opened,setOpened)
   const [open, setOpen] = React.useState(opened);
-  const [issueHistory, setRes] = useState([]);
+  const [issueHistory, setIssueHistory] = useState([]);
   var data = [];
+  const dispatch = useDispatch();
+  const paperStyle = {
+    padding: "24px 20px",
+    width: "calc(100%-40px)",
+    margin: "20px auto",
+  };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await fetch("issue/getEventsByIssue/" + ed_issueID)
+  //       .then((res) => res.json())
+  //       .then((result) => {
+  //         setIssueHistory(result);
+  //       });
+  //     // const data = await res.json()
+  //     // const newStatus = data.map(obj => (obj.availableStatus))
+  //     // const oldIssue = data.map(obj => (obj.count))
+  //     // console.log("from bc : " + newStatus)
+  //     // console.log("from bc : " + oldIssue)
+  //     // setAvailabeStatus(newStatus)
+  //     // setOldIssue(oldIssue)
+  //   })();
+  //   // console.log("from data" + data)
+  //   setOpen(opened);
+  // }, [opened]);
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("issue/getEventsByIssue/" + ed_issueID)
-        .then((res) => res.json())
-        .then((result) => {
-          setRes(result);
-        });
-      // const data = await res.json()
-      // const newStatus = data.map(obj => (obj.availableStatus))
-      // const oldIssue = data.map(obj => (obj.count))
-      // console.log("from bc : " + newStatus)
-      // console.log("from bc : " + oldIssue)
-      // setAvailabeStatus(newStatus)
-      // setOldIssue(oldIssue)
+      if (!ed_issueID) return;
+      const res = await fetch("issue/getEventsByIssue/" + ed_issueID);
+      const data = await res.json();
+      setIssueHistory(data);
     })();
-    // console.log("from data" + data)
+
     setOpen(opened);
-  }, [opened]);
+  }, [ed_issueID, opened]);
 
   React.useEffect(() => {
-    console.log(ed_issueID);
+    console.log("history "+ed_issueID);
   }, [ed_issueID]);
 
   const handleClose = () => {
@@ -51,15 +75,10 @@ export default function FormDialog({ ed_issueID }) {
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit Issue</DialogTitle>
+        <DialogTitle>History Issue</DialogTitle>
         <DialogContent>
           <Container>
             <Paper elevation={3} style={paperStyle}>
-              <EditDialog
-                ed_issueID={ed_issueID}
-                opened={opened}
-                setOpened={setOpened}
-              />
               <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>
                 All Issues
               </h2>

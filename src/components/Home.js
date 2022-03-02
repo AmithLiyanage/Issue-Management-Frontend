@@ -20,7 +20,7 @@ function Home() {
 
           <div id="pieChartContainer" />
           <div className="paper-arrange-horizontal">
-            <AddIssue />
+            {/* <AddIssue /> */}
             <Issue />
           </div>
         </>
