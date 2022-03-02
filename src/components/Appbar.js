@@ -53,8 +53,9 @@ export default function ButtonAppBar() {
           </Typography>
           {authenticated && (
             <>
-              <Avatar src={imageUrl} />{" "}
-              <Typography variant="p" component="div" sx={{ flexGrow: 1 }}>
+              <Avatar src={imageUrl}  style={{ marginRight: "18px", direction: "rtl"}}/>{" "}
+              <Typography variant="p" component="div" sx={{ flexGrow: 1 }}
+                style={{ marginRight: "18px", direction: "rtl", flexGrow: "0" }}>
                 {name}
               </Typography>
             </>

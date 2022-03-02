@@ -23,7 +23,6 @@ export default function FormDialogHistory({
   ed_issueID,
   opened,
   setOpened }) {
-    console.log("inside history",ed_issueID,opened,setOpened)
   const [open, setOpen] = React.useState(opened);
   const [issueHistory, setIssueHistory] = useState([]);
   var data = [];

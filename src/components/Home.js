@@ -3,7 +3,8 @@ import PieChart from "./PieChart";
 import AddIssue from "./AddIssue";
 import Issue from "./Issue";
 import { useSelector } from "react-redux";
-import { Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
+import { color, fontSize } from "@mui/system";
 
 function Home() {
   const authenticated = useSelector(
@@ -20,12 +21,18 @@ function Home() {
 
           <div id="pieChartContainer" />
           <div className="paper-arrange-horizontal">
-            {/* <AddIssue /> */}
             <Issue />
           </div>
         </>
       ) : (
-        <Typography>Please Login!</Typography>
+        <Typography><div style={{
+          height: "600px",
+          transform: "translateY(50%)",
+          textAlign: "center",
+          fontSize: "24px",
+          color: "blue"
+        }}>Please Login!</div>
+        </Typography>
       )}
     </div>
   );
