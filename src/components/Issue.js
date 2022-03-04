@@ -10,7 +10,7 @@ import HistoryIcon from "@mui/icons-material/History";
 import AddIssueDialog from "./AddIssueDialog";
 import HistoryIssueDialog from "./HistoryDialog";
 import EditDialog from "./EditDialog";
-import { getPieData } from "../store/actions";
+import { getPieData } from "../state/actions";
 import { useDispatch } from "react-redux";
 
 //const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -18,8 +18,9 @@ import { useDispatch } from "react-redux";
 // const ListItem = styled('li')(({ theme }) => ({
 //   margin: theme.spacing(0.5),
 // }));
-
-export default function Issue() {
+export default function Issue(
+  filteredBy
+) {
   const dispatch = useDispatch();
   const paperStyle = {
     padding: "24px 20px",
@@ -53,6 +54,10 @@ export default function Issue() {
     console.info('You clicked the delete icon.');
   };
 
+  // React.useEffect(() => {
+  //   console.log("filteredBy in Issue Com "+filteredBy);
+  // }, [filteredBy]);
+
   const [chipData, setChipData] = React.useState([
     { key: 0, label: 'All' },
     { key: 1, label: 'OPEN' },
@@ -60,6 +65,7 @@ export default function Issue() {
     { key: 3, label: 'WAITING_ON_CLIENT' },
     { key: 4, label: 'RESOLVED' },
   ]);
+  const activFiltre = null;
 
   const deleteFilter = (chipToDelete) => () => {
     setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
@@ -68,6 +74,7 @@ export default function Issue() {
   //issue list filter
   const checkLabels = async (label) => {
     let res, response;
+    activFiltre = label;
     switch (label) {
       case "OPEN":
         res = await fetch("/issue/getOpenIssues");
@@ -150,14 +157,22 @@ export default function Issue() {
           opened={opened}
           setOpened={setOpened}
         />
-        component="ul"
         <div style={{ display: "flex", marginBottom: "16px", width: "100%" }}>
           <div style={{ margin: "0 8px", textAlign: "left", width: "80%" }}>
             <h2 >
               All Issues
             </h2>
-            <Stack direction="row" spacing={1} style={{ textAlign: "left" }}>
-              <Chip label="Deletable" variant="outlined" color="primary" onDelete={handleDelete} />
+          </div>
+          
+          <div style={{ margin: "0 8px", textAlign: "right", width: "20%" }}>
+            <Button variant="contained" color="primary"
+              onClick={() => addIssse()}>
+              + Add Issue
+            </Button>
+          </div>
+        </div>
+        <Stack direction="row" style={{ textAlign: "left" }}>
+              {/* <Chip label="Deletable" variant="outlined" color="primary" onDelete={handleDelete} /> */}
               {chipData.map((data) => {
                 return (
                   <ListItem key={data.key}>
@@ -170,29 +185,6 @@ export default function Issue() {
                 );
               })}
             </Stack>
-            {/* <Paper
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                listStyle: 'none',
-                p: 0.5,
-                m: 0,
-              }}
-              component="ul"
-            > */}
-              
-            {/* </Paper> */}
-          </div>
-          <div style={{ margin: "0 8px", textAlign: "right", width: "20%" }}>
-            <Button variant="contained" color="primary"
-              onClick={() => addIssse()}>
-              + Add Issue
-            </Button>
-          </div>
-
-        </div>
-
 
         {issues.map((issue) => (
           <Paper

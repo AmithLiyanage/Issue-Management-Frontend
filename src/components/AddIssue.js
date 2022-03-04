@@ -12,7 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { getPieData } from "../store/actions";
+import { getPieData } from "../state/actions";
 import { useDispatch } from "react-redux";
 
 export default function AddIssue() {

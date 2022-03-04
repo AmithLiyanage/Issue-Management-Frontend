@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { signIn, signOut } from "../store/actions";
+import { signIn, signOut } from "../state/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { Avatar } from "@mui/material";
 
