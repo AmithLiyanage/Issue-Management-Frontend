@@ -7,41 +7,30 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { getPieData } from "../state/actions";
 
-export default function FormDialog({
-  ed_issueID,
-  ed_issueName,
-  ed_issueState,
-  opened,
-  setOpened,
-}) {
-
+export default function FormDialog({ ed_issueID, opened, setOpened }) {
   const dispatch = useDispatch();
+  const [issueName, setIssueName] = useState("");
+  const [description, setDescription] = useState("");
+  const [state, setIssueState] = useState("");
+  const [availbleStatus, setAvailabeStatus] = useState([]);
+  const submittedBy = useSelector((state => state.authData.email));
+
   const paperStyle = {
     padding: "50px 20px",
     width: "calc(100%-40px)",
     margin: "20px auto",
   };
-  const [issueName, setIssueName] = useState("");
-  const [description, setDescription] = useState("");
-  const [state, setIssueState] = useState("");
-  const [issueRes, setRes] = useState([]);
-  var data = [];
-  const [issueOldIssue, setOldIssue] = useState([]);
-  const [availbleStatus, setAvailabeStatus] = useState([]);
-  const [issues, setIssues] = useState([]);
-
+  
   useEffect(() => {
     (async () => {
       if (!ed_issueID) return;
       const res = await fetch("issue/getIssueForUpdate/" + ed_issueID);
       const data = await res.json();
-      setRes(data);
       setAvailabeStatus(data.availableStatus);
-      // setOldIssue(data.issue);
       setIssueName(data.issue.issueName)
       setDescription(data.issue.description)
       setIssueState(data.issue.state)
@@ -55,7 +44,7 @@ export default function FormDialog({
     setOpened(false);
   };
 
-  const handleClick = (e) => {
+  const handleClickSave = (e) => {
     e.preventDefault();
     const issue = { issueName, description, state };
     console.log(issue);
@@ -67,7 +56,7 @@ export default function FormDialog({
     };
     fetch("issue/updateIssue/" + ed_issueID, requestOptions).then(() => {
       console.log("Issue is Updated");
-      getPieData()(dispatch);
+      getPieData({submittedBy})(dispatch);
     });
     setOpened(false)
   };
@@ -88,7 +77,7 @@ export default function FormDialog({
             <Box
               component="form"
               sx={{
-                "& > :not(style)": { m: 1, width: "80%", margin: "10px 5px" },
+                "& > :not(style)": { m: 1, width: "100%", margin: "10px 5px" },
               }}
               noValidate
               autoComplete="off"
@@ -128,22 +117,18 @@ export default function FormDialog({
                   ))}
                 </Select>
               </FormControl>
-              {/* default state need to set as OPEN */}
               <Stack
                 spacing={2}
                 direction="rtl"
                 style={{ margin: "auto", direction: "rtl" }}
               >
-                {/* <Button variant="contained" color="primary" onClick={handleClick}>
-                  Create
-                </Button> */}
               </Stack>
             </Box>
           </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClick}>Save</Button>
+          <Button onClick={handleClickSave}>Save</Button>
         </DialogActions>
       </Dialog>
     </div>

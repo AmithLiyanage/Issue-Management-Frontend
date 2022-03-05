@@ -19,13 +19,8 @@ export default function FormDialogHistory({ ed_issueID, opened, setOpened }) {
       const data = await res.json();
       setIssueHistory(data);
     })();
-
     setOpen(opened);
   }, [ed_issueID, opened]);
-
-  React.useEffect(() => {
-    // console.log("history " + ed_issueID);
-  }, [ed_issueID]);
 
   const handleClose = () => {
     setOpened(false);

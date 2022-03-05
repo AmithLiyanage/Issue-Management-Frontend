@@ -1,11 +1,8 @@
 import AppBar from "./Appbar";
 import PieChart from "./PieChart";
-import AddIssue from "./AddIssue";
 import Issue from "./Issue";
 import { useSelector } from "react-redux";
-import { Paper, Typography } from "@mui/material";
-import { color, fontSize } from "@mui/system";
-import HooksIssuesContainer from "./HooksIssuesContainer";
+import { Typography } from "@mui/material";
 
 function Home() {
   const authenticated = useSelector(
@@ -17,7 +14,6 @@ function Home() {
       {authenticated ? (
         <>
           <div className="paper-arrange-horizontal">
-            {/* <HooksIssuesContainer/> */}
             <PieChart />
           </div>
 
