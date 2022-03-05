@@ -11,17 +11,25 @@ import AddIssueDialog from "./AddIssueDialog";
 import HistoryIssueDialog from "./HistoryDialog";
 import EditDialog from "./EditDialog";
 import { getPieData } from "../state/actions";
-import { useDispatch } from "react-redux";
+import { setIssueListData } from "../state/actions";
+// import { tmplabel } from "../state/actions";
+import { useSelector, useDispatch } from "react-redux";
+import { bindActionCreators } from 'redux';
+import { actionCreators } from "../state/index";
 
 //const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-// const ListItem = styled('li')(({ theme }) => ({
-//   margin: theme.spacing(0.5),
-// }));
-export default function Issue(
-  filteredBy
-) {
+export default function Issue() {
+  const initData = useSelector((state => state));
+  const IssueList = useSelector((state => state.issueListType));
   const dispatch = useDispatch();
+  const {tmplabel} = bindActionCreators(actionCreators, dispatch);
+
+  const AC = bindActionCreators(actionCreators, dispatch);
+  console.log(AC)
+
+  // console.log(IssueList);
+
   const paperStyle = {
     padding: "24px 20px",
     width: "calc(100%-40px)",
@@ -35,6 +43,7 @@ export default function Issue(
 
   //edit/history dialog
   const [issues, setIssues] = useState([]);
+  // const [filteredBy, setfilteredBy] = useState(null);
   const [filteredIssues, setFilteredIssues] = useState([]);
   const [ed_issueID, setEDIssueID] = useState(null);
   const [ed_issueName, setEDIssueName] = useState(null);
@@ -54,9 +63,13 @@ export default function Issue(
     console.info('You clicked the delete icon.');
   };
 
-  // React.useEffect(() => {
-  //   console.log("filteredBy in Issue Com "+filteredBy);
-  // }, [filteredBy]);
+  useEffect(() => {
+    getPieData()(dispatch);
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   setIssueListData()(dispatch);
+  // }, [dispatch]);
 
   const [chipData, setChipData] = React.useState([
     { key: 0, label: 'All' },
@@ -67,14 +80,23 @@ export default function Issue(
   ]);
   const activFiltre = null;
 
+
   const deleteFilter = (chipToDelete) => () => {
     setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
   };
 
+  
   //issue list filter
+  const setLabel = async (label) => {
+    console.log("new label : "+label);
+    console.log("IssueList : "+IssueList);
+    console.log("initData "+initData.AC);
+  };
+
   const checkLabels = async (label) => {
+    console.log("new label "+label);
     let res, response;
-    activFiltre = label;
+    // activFiltre = label;
     switch (label) {
       case "OPEN":
         res = await fetch("/issue/getOpenIssues");
@@ -105,12 +127,12 @@ export default function Issue(
 
   //dialogs
   const addIssse = () => {
-    console.log("trying to add")
+    //console.log("trying to add")
     setAddOpened(true);
   };
 
   const historyIssse = (ed_issueID) => {
-    console.log("trying get " + ed_issueID + " history")
+    //console.log("trying get " + ed_issueID + " history")
     setEDIssueID(ed_issueID);
     setHistoryOpened(true);
   };
@@ -157,10 +179,15 @@ export default function Issue(
           opened={opened}
           setOpened={setOpened}
         />
+        <button onClick={() => setIssueListData()}>Check</button>
+        <button onClick={async (e) => await setLabel(setIssueListData())}>Check 2</button>
+        <button onClick={async (e) => await setLabel(tmplabel())}>Check 3</button>
+        <button onClick={async (e) => await checkLabels(tmplabel())}>Check 4</button>
         <div style={{ display: "flex", marginBottom: "16px", width: "100%" }}>
           <div style={{ margin: "0 8px", textAlign: "left", width: "80%" }}>
             <h2 >
-              All Issues
+              All issues
+              <div> {IssueList}</div>
             </h2>
           </div>
           
@@ -171,7 +198,7 @@ export default function Issue(
             </Button>
           </div>
         </div>
-        <Stack direction="row" style={{ textAlign: "left" }}>
+        <Stack direction="row" style={{ textAlign: "left", display: "inline-flex"}} >
               {/* <Chip label="Deletable" variant="outlined" color="primary" onDelete={handleDelete} /> */}
               {chipData.map((data) => {
                 return (

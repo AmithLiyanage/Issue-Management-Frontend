@@ -7,14 +7,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-} from "@mui/material";
+import { useDispatch } from "react-redux";
+import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 
 export default function FormDialog({
   ed_issueID,
@@ -23,32 +17,25 @@ export default function FormDialog({
   opened,
   setOpened,
 }) {
-  const [open, setOpen] = React.useState(opened);
+
+  const dispatch = useDispatch();
+  const paperStyle = {
+    padding: "50px 20px",
+    width: "calc(100%-40px)",
+    margin: "20px auto",
+  };
+  const [issueName, setIssueName] = useState("");
+  const [description, setDescription] = useState("");
+  const [state, setIssueState] = useState("");
   const [issueRes, setRes] = useState([]);
   var data = [];
   const [issueOldIssue, setOldIssue] = useState([]);
-  const [availbeStatus, setAvailabeStatus] = useState([]);
+  const [availbleStatus, setAvailabeStatus] = useState([]);
 
-  // useEffect(() => {
-  //   console.log("ed_issueID : "+ed_issueID)
-  //   fetch("issue/getIssueForUpdate/"+ed_issueID)
-  //     .then(res => res.json())
-  //     .then((result) => {
-  //       setOldData(result);
-  //     })
-  //     console.log("from bc : "+issueOldData)
-  // }, [])
 
-  //get data after opened
-  // React.useEffect(() => {
-  //   fetch("issue/getIssueForUpdate/" + ed_issueID)
-  //     .then(res => res.json())
-  //     .then((result) => {
-  //       setRes(result);
-  //     })
-  //   console.log("from bc : " + issueOldData)
-  //   setOpen(opened)
-  // }, [opened])
+  const [issues, setIssues] = useState([]);
+
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     (async () => {
@@ -57,40 +44,32 @@ export default function FormDialog({
       const data = await res.json();
       setRes(data);
       setAvailabeStatus(data.availableStatus);
-      setOldIssue(data.issue);
-    })();
-
+      setOldIssue(data.issue);    })();
     setOpen(opened);
-  }, [ed_issueID, opened]);
+  }, [opened]);
 
-  React.useEffect(() => {
-    console.log(ed_issueID);
-  }, [ed_issueID]);
-
-  React.useEffect(() => {
-  }, [ed_issueName]);
-
-  React.useEffect(() => {
-  }, [ed_issueState]);
-
-  const handleClose = () => {
-    setOpened(false);
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  // const handleClick = (e) => {
-  //   e.preventDefault();
-  //   const issue = {};
-  //   console.log(issue);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-  //   const requestOptions = {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(issue),
-  //   };
-  //   fetch("issue/add", requestOptions).then(() => {
-  //     console.log("New Issue is Added");
-  //   });
-  // };
+  const handleClick = (e) => {
+    e.preventDefault();
+    const issue = { issueName, description, state };
+    console.log(issue);
+
+    // const requestOptions = {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(issue),
+    // };
+    // fetch("issue/add", requestOptions).then(() => {
+    //   console.log("New Issue is Added");
+    // });
+  };
 
   return (
     <div>
@@ -98,72 +77,68 @@ export default function FormDialog({
         <DialogTitle>Edit Issue</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            #{ed_issueID} {ed_issueName} {ed_issueState}
+            # {ed_issueID}
           </DialogContentText>
           <form
-            style={{ margin: "10px 0px", padding: "10px 10" }}
+          style={{ margin: "10px 0px", padding: "10px 0" }}
+          noValidate
+          autoComplete="off"
+        >
+          <Box
+            component="form"
+            sx={{
+              "& > :not(style)": { m: 1, width: "80%", margin: "10px 5px" },
+            }}
             noValidate
             autoComplete="off"
           >
-            <Box
-              component="form"
-              sx={{
-                "& > :not(style)": { m: 1, width: "100%", margin: "10px 5px" },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="outlined-basic"
-                value={ed_issueName}
-                // onChange={(e) => setIssueName(e.target.value)}
-                label="Issue Name"
-                type="text"
-                variant="outlined"
-                fullWidth
-                className="paper-inpt-fields"
-              />
-              <TextField
-                id="outlined-basic"
-                value={"des"}
-                // onChange={(e) => setDescription(e.target.value)}
-                label="Description"
-                type="text"
-                variant="outlined"
-                fullWidth
-                className="paper-inpt-fields"
-              />
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Type</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={ed_issueState}
-                  label="Next State"
-                // onChange={(e) => setType(e.target.value)}
-                >
-                  <MenuItem value={ed_issueState}>{ed_issueState}</MenuItem>
-                  {availbeStatus.map((i) => (
-                    <MenuItem value={i}>{i}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {/* default state need to set as OPEN */}
-              {/* <Stack
-                spacing={2}
-                direction="rtl"
-                style={{ margin: "auto", direction: "rtl" }}
+            <TextField
+              id="outlined-basic"
+              value={issueOldIssue.issueName}
+              onChange={(e) => setIssueName(e.target.value)}
+              label="Issue Name"
+              variant="outlined"
+              fullWidth
+              className="paper-inpt-fields"
+            />
+            <TextField
+              id="outlined-basic"
+              value={issueOldIssue.description}
+              onChange={(e) => setDescription(e.target.value)}
+              label="Description"
+              type="text"
+              variant="outlined"
+              fullWidth
+              className="paper-inpt-fields"
+            />
+            <FormControl fullWidth>
+              {/* // see: https://mui.com/system/the-sx-prop/ */}
+              <InputLabel id="demo-simple-select-label">Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={issueOldIssue.state}
+                label="State"
+                onChange={(e) => setIssueState(e.target.value)}
               >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleClick}
-                >
-                  Create
-                </Button>
-              </Stack> */}
-            </Box>
-          </form>
+                <MenuItem value={ed_issueState}>{issueOldIssue.state}</MenuItem>
+                  {availbleStatus.map((i) => (
+                    <MenuItem value={i}>{i}</MenuItem>
+                  ))}            
+                  </Select>
+            </FormControl>
+            {/* default state need to set as OPEN */}
+            <Stack
+              spacing={2}
+              direction="rtl"
+              style={{ margin: "auto", direction: "rtl" }}
+            >
+              <Button variant="contained" color="primary" onClick={handleClick}>
+                Create
+              </Button>
+            </Stack>
+          </Box>
+        </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

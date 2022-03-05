@@ -7,62 +7,50 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import HistoryIcon from "@mui/icons-material/History";
 import { getPieData } from "../state/actions";
+import { getIssueListData } from "../state/actions";
 import { useDispatch, useSelector } from "react-redux";
-import IssueComponent from "./Issue";
-
-const noOfIssues = 0;
-
-//  
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     noOfIssues: state.noOfIssues
-//   }
-// }
 
 export default function PieChartFN(props) {
   const dispatch = useDispatch();
-  const paperStyle = {
+  // const paperStyle = {
+  //   padding: "24px 20px",
+  //   width: "calc(100%-40px)",
+  //   margin: "20px auto",
+  // };
+  // const paperStyle2 = {
+  //   padding: "24px 20px",
+  //   width: "calc(50% - 40px)",
+  //   margin: "20px 20px",
+  // };
+  const paperStyle3 = {
     padding: "24px 20px",
-    width: "calc(100%-40px)",
-    margin: "20px auto",
+    width: "100%",
+    margin: "20px 10px 0 0"
   };
-  const paperStyle2 = {
+
+  const paperStyle4 = {
     padding: "24px 20px",
-    width: "calc(50% - 40px)",
-    margin: "20px 20px",
+    width: "100%",
+    margin: "20px 0 0 10px"
   };
 
   const [filteredIssues, setFilteredIssues] = useState([]);
-  // const [filteredBy, setfilteredBy] = useState(null);
+  const [filteredBy, setfilteredBy] = useState(null);
   const issuesByState = useSelector(({ data }) => data);
-  // const selectedFilter = null;
-
-
-  // console.log("issuesByState : "+issuesByState);
-
-  //custom data edit in ui
-  // useEffect(() => {
-  //     (async () => {
-  //         const res = await fetch("/issue/getStatusOfIssues")
-  //         const data = await res.json()
-  //         const names = data.map(obj => (obj.name))
-  //         const count = data.map(obj => (obj.count))
-  //         setValues(count)
-  //         setLabels(names)
-  //     })()
-  //     console.log("from data"+data)
-  // }, [])
 
   useEffect(() => {
     getPieData()(dispatch);
   }, [dispatch]);
 
+  // useEffect(() => {
+  //   console.log("filteredBy action: "+filteredBy);
+  //   getIssueListData(filteredBy)(dispatch);
+  // }, [dispatch]);
 
   const checkLabels = async (label) => {
+    // setfilteredBy(label)
     // console.log("filteredBy "+filteredBy);
-    // selectedFilter = label
-    // console.log("selectedFilter "+selectedFilter);
+    getIssueListData({label})(dispatch);
     let res, response;
     switch (label) {
       case "OPEN":
@@ -87,29 +75,22 @@ export default function PieChartFN(props) {
     }
     // var count = Object.keys(response).length;
     // noOfIssues = count;
-    console.log(response);
+    // console.log(response);
     setFilteredIssues(response);
   };
 
   return (
     <Container>
       <div className="paper-arrange-horizontal" style={{display: "flex"}}>
-      <Paper elevation={3} style={paperStyle2}>
+      <Paper elevation={3} style={paperStyle3}>
         <Plot
           data={[issuesByState?.pieChartData]}
           layout={{ width: 500, height: 400, title: "Issue Pie Chart" }}
           onClick={async (e) => await checkLabels(e.points[0].label)}//pie chart on click()
-          // onClick={() => dispatch(passLabel())}//pie chart on click()
-
-
         />
       </Paper>
 
-      {/* <IssueComponent
-          filteredBy={selectedFilter}
-        /> */}
-
-      <Paper elevation={3} style={paperStyle2}>
+      <Paper elevation={3} style={paperStyle4}>
         <h2 style={{ margin: "0 16px 16px 16px", textAlign: "left" }}>
           Issues :{" "}
         </h2>

@@ -8,14 +8,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-} from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 
 export default function FormDialog({
   opened,
@@ -42,7 +35,6 @@ export default function FormDialog({
       const data = await res.json();
       setRes(data);
     })();
-
     setOpen(opened);
   }, [opened]);
 

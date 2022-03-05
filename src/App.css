@@ -55,3 +55,7 @@
   max-width: 600px;
   margin: 0 auto
 }
+
+.dialog-table {
+  max-width: 'auto' !important;
+}
