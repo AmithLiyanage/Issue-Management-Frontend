@@ -12,16 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function PieChartFN(props) {
   const dispatch = useDispatch();
-  // const paperStyle = {
-  //   padding: "24px 20px",
-  //   width: "calc(100%-40px)",
-  //   margin: "20px auto",
-  // };
-  // const paperStyle2 = {
-  //   padding: "24px 20px",
-  //   width: "calc(50% - 40px)",
-  //   margin: "20px 20px",
-  // };
+  const submittedBy = useSelector((state => state.authData.email));
+  const [filteredIssues, setFilteredIssues] = useState([]);
+  const [filteredBy, setfilteredBy] = useState(null);
+  const issuesByState = useSelector(({ data }) => data);
+
   const paperStyle3 = {
     padding: "24px 20px",
     width: "100%",
@@ -34,18 +29,9 @@ export default function PieChartFN(props) {
     margin: "20px 0 0 10px"
   };
 
-  const [filteredIssues, setFilteredIssues] = useState([]);
-  const [filteredBy, setfilteredBy] = useState(null);
-  const issuesByState = useSelector(({ data }) => data);
-
   useEffect(() => {
-    getPieData()(dispatch);
+    getPieData({submittedBy})(dispatch);
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   console.log("filteredBy action: "+filteredBy);
-  //   getIssueListData(filteredBy)(dispatch);
-  // }, [dispatch]);
 
   const checkLabels = async (label) => {
     // setfilteredBy(label)
@@ -54,23 +40,24 @@ export default function PieChartFN(props) {
     let res, response;
     switch (label) {
       case "OPEN":
-        res = await fetch("/issue/getOpenIssues");
+        res = await fetch("/issue/getOpenIssues?submittedBy="+submittedBy);
         response = await res.json();
         break;
       case "IN_PROGRESS":
-        res = await fetch("/issue/getInProgressIssues");
+        res = await fetch("/issue/getInProgressIssues?submittedBy="+submittedBy);
         response = await res.json();
         break;
       case "WAITING_ON_CLIENT":
-        res = await fetch("/issue/getWaitingOnClientIssues");
+        res = await fetch("/issue/getWaitingOnClientIssues?submittedBy="+submittedBy);
         response = await res.json();
         break;
       case "RESOLVED":
-        res = await fetch("/issue/getResolvedIssues");
+        res = await fetch("/issue/getResolvedIssues?submittedBy="+submittedBy);
         response = await res.json();
         break;
       default:
-        console.log("checkLabels : " + checkLabels);
+        res = await fetch("/issue/getAllIssues?submittedBy="+submittedBy);
+        response = await res.json();
         break;
     }
     // var count = Object.keys(response).length;

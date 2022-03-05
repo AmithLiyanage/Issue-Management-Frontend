@@ -2,9 +2,9 @@ import * as actions from "./actionTypes";
 
 let listType = "ALL"
 
-export const getPieData = () => async (dispatch) => {
+export const getPieData = ({submittedBy}) => async (dispatch) => {
   try {
-    const res = await fetch("/issue/getStatusOfIssues");
+    const res = await fetch("/issue/getStatusOfIssues?submittedBy="+submittedBy);
     const result = await res.json();
     dispatch(actions.getPieChartDataAction.success(result));
   } catch (e) {
