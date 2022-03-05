@@ -4,6 +4,7 @@ export const signIn =
   ({ name, email, imageUrl }) =>
   async (dispatch) => {
     try {
+      console.log("localStorage.email : "+localStorage.email)
       dispatch(actions.signInAction.success({ name, email, imageUrl }));
     } catch (e) {
       console.log(e);

@@ -20,15 +20,21 @@ import { actionCreators } from "../state/index";
 //const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function Issue() {
-  const initData = useSelector((state => state));
-  const IssueList = useSelector((state => state.issueListType));
+  const userData = useSelector((state => state.authData.email));
+  const initData = useSelector((state => state.data.issueListType));
+  const issueListTypeProp = useSelector(({data:{issueListType}})=>issueListType)
+  // const IssueList = useSelector((state => state.issueListType));
+
+  // const [issueListType, setType] = useState("");
+  
+  const IssueList = useState('issueListType');
   const dispatch = useDispatch();
   const {tmplabel} = bindActionCreators(actionCreators, dispatch);
 
   const AC = bindActionCreators(actionCreators, dispatch);
   console.log(AC)
 
-  // console.log(IssueList);
+  console.log(issueListTypeProp);
 
   const paperStyle = {
     padding: "24px 20px",
@@ -80,17 +86,16 @@ export default function Issue() {
   ]);
   const activFiltre = null;
 
-
   const deleteFilter = (chipToDelete) => () => {
     setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
   };
-
   
   //issue list filter
   const setLabel = async (label) => {
     console.log("new label : "+label);
     console.log("IssueList : "+IssueList);
-    console.log("initData "+initData.AC);
+    console.log("initData "+initData);
+    console.log("userData "+userData);
   };
 
   const checkLabels = async (label) => {
@@ -213,11 +218,11 @@ export default function Issue() {
               })}
             </Stack>
 
-        {issues.map((issue) => (
+        {issues.map((issue, index) => (
           <Paper
             elevation={6}
             style={{ margin: "8px", textAlign: "left", display: "flex" }}
-            key={issue.issueId}
+            key={index}
           >
             <div style={{ width: "100%" }}>
               <div style={{ display: "flex" }}>

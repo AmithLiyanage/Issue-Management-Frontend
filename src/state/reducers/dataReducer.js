@@ -13,7 +13,6 @@ const authReducer = (state = initialState, { type, payload }) => {
         pieChartData: payload,
       };
     case actions.getIssueListDataAction.SUCCESS:
-      state.issueListType = "Open"
       return {
         ...state,
         issueListType: payload,

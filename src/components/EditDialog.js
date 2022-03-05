@@ -9,6 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
 import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { getPieData } from "../state/actions";
 
 export default function FormDialog({
   ed_issueID,
@@ -31,11 +32,7 @@ export default function FormDialog({
   var data = [];
   const [issueOldIssue, setOldIssue] = useState([]);
   const [availbleStatus, setAvailabeStatus] = useState([]);
-
-
   const [issues, setIssues] = useState([]);
-
-  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     (async () => {
@@ -44,16 +41,18 @@ export default function FormDialog({
       const data = await res.json();
       setRes(data);
       setAvailabeStatus(data.availableStatus);
-      setOldIssue(data.issue);    })();
-    setOpen(opened);
-  }, [opened]);
+      // setOldIssue(data.issue);
+      setIssueName(data.issue.issueName)
+      setDescription(data.issue.description)
+      setIssueState(data.issue.state)
+    })();
+  }, [ed_issueID]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // console.log(issueName +" o");
+  // console.log(issueName +" o");
 
   const handleClose = () => {
-    setOpen(false);
+    setOpened(false);
   };
 
   const handleClick = (e) => {
@@ -61,88 +60,90 @@ export default function FormDialog({
     const issue = { issueName, description, state };
     console.log(issue);
 
-    // const requestOptions = {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(issue),
-    // };
-    // fetch("issue/add", requestOptions).then(() => {
-    //   console.log("New Issue is Added");
-    // });
+    const requestOptions = {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(issue),
+    };
+    fetch("issue/updateIssue/" + ed_issueID, requestOptions).then(() => {
+      console.log("Issue is Updated");
+      getPieData()(dispatch);
+    });
+    setOpened(false)
   };
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={opened} onClose={handleClose}>
         <DialogTitle>Edit Issue</DialogTitle>
         <DialogContent>
           <DialogContentText>
             # {ed_issueID}
           </DialogContentText>
           <form
-          style={{ margin: "10px 0px", padding: "10px 0" }}
-          noValidate
-          autoComplete="off"
-        >
-          <Box
-            component="form"
-            sx={{
-              "& > :not(style)": { m: 1, width: "80%", margin: "10px 5px" },
-            }}
+            style={{ margin: "10px 0px", padding: "10px 0" }}
             noValidate
             autoComplete="off"
           >
-            <TextField
-              id="outlined-basic"
-              value={issueOldIssue.issueName}
-              onChange={(e) => setIssueName(e.target.value)}
-              label="Issue Name"
-              variant="outlined"
-              fullWidth
-              className="paper-inpt-fields"
-            />
-            <TextField
-              id="outlined-basic"
-              value={issueOldIssue.description}
-              onChange={(e) => setDescription(e.target.value)}
-              label="Description"
-              type="text"
-              variant="outlined"
-              fullWidth
-              className="paper-inpt-fields"
-            />
-            <FormControl fullWidth>
-              {/* // see: https://mui.com/system/the-sx-prop/ */}
-              <InputLabel id="demo-simple-select-label">Type</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={issueOldIssue.state}
-                label="State"
-                onChange={(e) => setIssueState(e.target.value)}
-              >
-                <MenuItem value={ed_issueState}>{issueOldIssue.state}</MenuItem>
+            <Box
+              component="form"
+              sx={{
+                "& > :not(style)": { m: 1, width: "80%", margin: "10px 5px" },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="outlined-basic"
+                value={issueName}
+                onChange={(e) => setIssueName(e.target.value)}
+                label="Issue Name"
+                variant="outlined"
+                fullWidth
+                className="paper-inpt-fields"
+              />
+              <TextField
+                id="outlined-basic"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                label="Description"
+                type="text"
+                variant="outlined"
+                fullWidth
+                className="paper-inpt-fields"
+              />
+              <FormControl fullWidth>
+                {/* // see: https://mui.com/system/the-sx-prop/ */}
+                <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={state}
+                  label="State"
+                  onChange={(e) => setIssueState(e.target.value)}
+                >
+                  <MenuItem value={state}>{state}</MenuItem>
                   {availbleStatus.map((i) => (
                     <MenuItem value={i}>{i}</MenuItem>
-                  ))}            
-                  </Select>
-            </FormControl>
-            {/* default state need to set as OPEN */}
-            <Stack
-              spacing={2}
-              direction="rtl"
-              style={{ margin: "auto", direction: "rtl" }}
-            >
-              <Button variant="contained" color="primary" onClick={handleClick}>
-                Create
-              </Button>
-            </Stack>
-          </Box>
-        </form>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* default state need to set as OPEN */}
+              <Stack
+                spacing={2}
+                direction="rtl"
+                style={{ margin: "auto", direction: "rtl" }}
+              >
+                {/* <Button variant="contained" color="primary" onClick={handleClick}>
+                  Create
+                </Button> */}
+              </Stack>
+            </Box>
+          </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Save</Button>
+          <Button onClick={handleClick}>Save</Button>
         </DialogActions>
       </Dialog>
     </div>

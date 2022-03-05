@@ -9,6 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
 import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { getPieData } from "../state/actions";
 
 export default function FormDialog({
   opened,
@@ -58,7 +59,9 @@ export default function FormDialog({
     };
     fetch("issue/add", requestOptions).then(() => {
       console.log("New Issue is Added");
+      getPieData()(dispatch);
     });
+    setOpen(false);
   };
 
   return (
@@ -121,16 +124,16 @@ export default function FormDialog({
               direction="rtl"
               style={{ margin: "auto", direction: "rtl" }}
             >
-              <Button variant="contained" color="primary" onClick={handleClick}>
+              {/* <Button variant="contained" color="primary" onClick={handleClick}>
                 Create
-              </Button>
+              </Button> */}
             </Stack>
           </Box>
         </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Save</Button>
+          <Button onClick={handleClick}>Save</Button>
         </DialogActions>
       </Dialog>
     </div>
