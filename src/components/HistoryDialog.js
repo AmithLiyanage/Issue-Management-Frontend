@@ -10,7 +10,6 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 export default function FormDialogHistory({ ed_issueID, opened, setOpened }) {
   const [open, setOpen] = React.useState(opened);
   const [issueHistory, setIssueHistory] = useState([]);
-  var data = [];
 
   useEffect(() => {
     (async () => {

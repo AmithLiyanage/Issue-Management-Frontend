@@ -22,8 +22,6 @@ const authReducer = (state = initialState, { type, payload }) => {
         ...state,
         issueListType: payload,
       };
-    case "tmpLabel":
-      return "OPEN";
 
     default:
       return state;

@@ -10,20 +10,16 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useSelector, useDispatch } from "react-redux";
 import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { getPieData } from "../state/actions";
+import { getIssueListData } from "../state/actions";
 
 export default function FormDialog({ ed_issueID, opened, setOpened }) {
   const dispatch = useDispatch();
+  const filterTypeData = useSelector((state => state.data.issueListType));
   const [issueName, setIssueName] = useState("");
   const [description, setDescription] = useState("");
   const [state, setIssueState] = useState("");
   const [availbleStatus, setAvailabeStatus] = useState([]);
   const submittedBy = useSelector((state => state.authData.email));
-
-  const paperStyle = {
-    padding: "50px 20px",
-    width: "calc(100%-40px)",
-    margin: "20px auto",
-  };
   
   useEffect(() => {
     (async () => {
@@ -36,9 +32,6 @@ export default function FormDialog({ ed_issueID, opened, setOpened }) {
       setIssueState(data.issue.state)
     })();
   }, [ed_issueID]);
-
-  // console.log(issueName +" o");
-  // console.log(issueName +" o");
 
   const handleClose = () => {
     setOpened(false);
@@ -57,6 +50,7 @@ export default function FormDialog({ ed_issueID, opened, setOpened }) {
     fetch("issue/updateIssue/" + ed_issueID, requestOptions).then(() => {
       console.log("Issue is Updated");
       getPieData({submittedBy})(dispatch);
+      getIssueListData({ filterTypeData })(dispatch);
     });
     setOpened(false)
   };

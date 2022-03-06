@@ -11,35 +11,23 @@ import AddIssueDialog from "./AddIssueDialog";
 import HistoryIssueDialog from "./HistoryDialog";
 import EditDialog from "./EditDialog";
 import { getPieData } from "../state/actions";
-import { setIssueListData } from "../state/actions";
-// import { tmplabel } from "../state/actions";
 import { useSelector, useDispatch } from "react-redux";
-import { bindActionCreators } from 'redux';
-import { actionCreators } from "../state/index";
 
 //const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function Issue() {
+  const dispatch = useDispatch();
   const submittedBy = useSelector((state => state.authData.email));
   const filterTypeData = useSelector((state => state.data.issueListType));
-  const issueListTypeProp = useSelector(({ data: { issueListType } }) => issueListType)
-  // const IssueList = useSelector((state => state.issueListType));
 
-  // const [issueListType, setType] = useState("");
-  
   //add dialog
   const [openedAdd, setAddOpened] = useState(false);
   const [openedHistory, setHistoryOpened] = useState(false);
 
   //edit dialog
   const [issues, setIssues] = useState([]);
-  const [filteredIssues, setFilteredIssues] = useState([]);
   const [ed_issueID, setEDIssueID] = useState(null);
   const [opened, setOpened] = useState(false);
-
-  const IssueList = useState('issueListType');
-  const dispatch = useDispatch();
-  const { tmplabel } = bindActionCreators(actionCreators, dispatch);
 
   const paperStyle = {
     padding: "24px 20px",
@@ -48,7 +36,7 @@ export default function Issue() {
   };
 
   useEffect(() => {
-    fetch("/issue/getAllIssues?submittedBy="+submittedBy)
+    fetch("/issue/getAllIssues?submittedBy=" + submittedBy)
       .then((res) => res.json())
       .then((result) => {
         setIssues(result);
@@ -56,57 +44,47 @@ export default function Issue() {
   }, []); //single call
 
   useEffect(() => {
-    getPieData({submittedBy})(dispatch);
+    getPieData({ submittedBy })(dispatch);
   }, [dispatch]);
 
-  const [chipData, setChipData] = React.useState([
-    { key: 0, label: 'All' },
-    { key: 1, label: 'OPEN' },
-    { key: 2, label: 'IN_PROGRESS' },
-    { key: 3, label: 'WAITING_ON_CLIENT' },
-    { key: 4, label: 'RESOLVED' },
-  ]);
+  // const [chipData, setChipData] = React.useState([
+  //   { key: 0, label: 'All' },
+  //   { key: 1, label: 'OPEN' },
+  //   { key: 2, label: 'IN_PROGRESS' },
+  //   { key: 3, label: 'WAITING_ON_CLIENT' },
+  //   { key: 4, label: 'RESOLVED' },
+  // ]);
 
-  const deleteFilter = (chipToDelete) => () => {
-    setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
-  };
-
-  //issue list filter
-  const setLabel = async (label) => {
-    console.log("new label : " + label);
-    console.log("IssueList : " + IssueList);
-    console.log("filterTypeData " + filterTypeData);
-    console.log("submittedBy " + submittedBy);
-  };
+  // const deleteFilter = (chipToDelete) => () => {
+  //   setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+  // };
 
   const checkLabels = async (label) => {
-    console.log("new label " + label);
-    let res, response;
+    let res, result;
     switch (label) {
       case "OPEN":
-        res = await fetch("/issue/getOpenIssues?submittedBy="+submittedBy);
-        response = await res.json();
+        res = await fetch("/issue/getOpenIssues?submittedBy=" + submittedBy);
+        result = await res.json();
         break;
       case "IN_PROGRESS":
-        res = await fetch("/issue/getInProgressIssues?submittedBy="+submittedBy);
-        response = await res.json();
+        res = await fetch("/issue/getInProgressIssues?submittedBy=" + submittedBy);
+        result = await res.json();
         break;
       case "WAITING_ON_CLIENT":
-        res = await fetch("/issue/getWaitingOnClientIssues?submittedBy="+submittedBy);
-        response = await res.json();
+        res = await fetch("/issue/getWaitingOnClientIssues?submittedBy=" + submittedBy);
+        result = await res.json();
         break;
       case "RESOLVED":
-        res = await fetch("/issue/getResolvedIssues?submittedBy="+submittedBy);
-        response = await res.json();
+        res = await fetch("/issue/getResolvedIssues?submittedBy=" + submittedBy);
+        result = await res.json();
         break;
       default:
-        res = await fetch("/issue/getAllIssues?submittedBy="+submittedBy);
-        response = await res.json();
+        res = await fetch("/issue/getAllIssues?submittedBy=" + submittedBy);
+        result = await res.json();
         break;
     }
-    console.log("label : " + label);
-    console.log(response);
-    setFilteredIssues(response);
+    // console.log(result);
+    setIssues(result);
   };
 
   //dialogs
@@ -157,14 +135,18 @@ export default function Issue() {
           opened={opened}
           setOpened={setOpened}
         />
-        <button onClick={() => setIssueListData()}>Check</button>
-        <button onClick={async (e) => await setLabel(setIssueListData())}>Check 2</button>
-        <button onClick={async (e) => await setLabel(tmplabel())}>Check 3</button>
-        <button onClick={async (e) => await checkLabels(tmplabel())}>Check 4</button>
-        <div style={{ display: "flex", marginBottom: "16px", width: "100%" }}>
+
+        <div style={{ display: "flex", marginBottom: "24px", width: "100%" }}>
           <div style={{ margin: "0 8px", textAlign: "left", width: "80%", display: "inline-flex" }}>
-            <h2 >All issues : </h2>
-            <h2 style={{ marginLeft: "16px", color: "blue"}}>{filterTypeData}</h2>
+            <div style={{ fontSize: "24px", fontWeight:"bold" }}>All Issues : </div>
+            <Button variant="outlined" color="primary" style={{ marginLeft: "16px" }}
+              onClick={async (e) => await checkLabels("ALL")} >
+              Reset
+            </Button>
+            <Button variant="outlined" color="primary" style={{ marginLeft: "16px" }}
+              onClick={async (e) => await checkLabels(filterTypeData)}>
+              Filter by : {filterTypeData}
+            </Button>
           </div>
 
           <div style={{ margin: "0 8px", textAlign: "right", width: "20%" }}>
@@ -174,9 +156,9 @@ export default function Issue() {
             </Button>
           </div>
         </div>
-        <Stack direction="row" style={{ textAlign: "left", display: "inline-flex" }} >
-          {/* <Chip label="Deletable" variant="outlined" color="primary" onDelete={handleDelete} /> */}
-          {chipData.map((data) => {
+        {/* <Stack direction="row" style={{ textAlign: "left", display: "inline-flex" }} > */}
+        {/* <Chip label="Deletable" variant="outlined" color="primary" onDelete={handleDelete} /> */}
+        {/* {chipData.map((data) => {
             return (
               <ListItem key={data.key}>
                 <Chip
@@ -186,8 +168,8 @@ export default function Issue() {
                 />
               </ListItem>
             );
-          })}
-        </Stack>
+          })} */}
+        {/* </Stack> */}
 
         {issues.map((issue, index) => (
           <Paper
@@ -204,7 +186,7 @@ export default function Issue() {
                   </div>
                 </div>
                 <div style={{ width: "50%", display: "flex", direction: "rtl", padding: "8px" }}>
-                  <IconButton aria-label="history" style={{ marginRight: "8px"}}
+                  <IconButton aria-label="history" style={{ marginRight: "8px" }}
                     onClick={() => deleteIssue(issue.issueId)}
                   >
                     <DeleteIcon fontSize="small" />

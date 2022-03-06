@@ -9,11 +9,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { getPieData } from "../state/actions";
+import { getIssueListData } from "../state/actions";
 import { useSelector, useDispatch } from "react-redux";
 
 export default function FormDialog({ opened, setOpened }) {
-
   const dispatch = useDispatch();
+  const filterTypeData = useSelector((state => state.data.issueListType));
   const [nextIssueId, setRes] = useState("");
   const [issueName, setIssueName] = useState("");
   const [description, setDescription] = useState("");
@@ -31,13 +32,35 @@ export default function FormDialog({ opened, setOpened }) {
     setOpen(opened);
   }, [opened]);
 
+  
+
+  //form validation
+  // state = {
+  //   formData: {
+  //     email: '',
+  //   },
+  //   submitted: false,
+  // }
+
+  // handleChange = (event) => {
+  //   const { formData } = this.state;
+  //   formData[event.target.name] = event.target.value;
+  //   this.setState({ formData });
+  // }
+
+  // handleSubmit = () => {
+  //   this.setState({ submitted: true }, () => {
+  //     setTimeout(() => this.setState({ submitted: false }), 5000);
+  //   });
+  // }
+
   const handleClose = () => {
     setOpened(false)
   };
 
   const handleClickSave = (e) => {
     e.preventDefault();
-    const issue = { issueName, description, type, submittedBy};
+    const issue = { issueName, description, type, submittedBy };
     console.log(issue);
 
     const requestOptions = {
@@ -47,7 +70,8 @@ export default function FormDialog({ opened, setOpened }) {
     };
     fetch("issue/add", requestOptions).then(() => {
       console.log("New Issue is Added");
-      getPieData({submittedBy})(dispatch);
+      getPieData({ submittedBy })(dispatch);
+      getIssueListData({ filterTypeData })(dispatch);
     });
     setOpened(false)
   };
@@ -81,6 +105,8 @@ export default function FormDialog({ opened, setOpened }) {
                 variant="outlined"
                 fullWidth
                 className="paper-inpt-fields"
+                validators={['required']}
+                errorMessages={['this field is required']}
               />
               <TextField
                 id="outlined-basic"
