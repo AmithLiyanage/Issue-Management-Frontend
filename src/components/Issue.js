@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 //const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function Issue() {
+
   const dispatch = useDispatch();
   const submittedBy = useSelector((state => state.authData.email));
   const filterTypeData = useSelector((state => state.data.issueListType));
@@ -59,34 +60,6 @@ export default function Issue() {
   //   setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
   // };
 
-  const checkLabels = async (label) => {
-    let res, result;
-    switch (label) {
-      case "OPEN":
-        res = await fetch("/issue/getOpenIssues?submittedBy=" + submittedBy);
-        result = await res.json();
-        break;
-      case "IN_PROGRESS":
-        res = await fetch("/issue/getInProgressIssues?submittedBy=" + submittedBy);
-        result = await res.json();
-        break;
-      case "WAITING_ON_CLIENT":
-        res = await fetch("/issue/getWaitingOnClientIssues?submittedBy=" + submittedBy);
-        result = await res.json();
-        break;
-      case "RESOLVED":
-        res = await fetch("/issue/getResolvedIssues?submittedBy=" + submittedBy);
-        result = await res.json();
-        break;
-      default:
-        res = await fetch("/issue/getAllIssues?submittedBy=" + submittedBy);
-        result = await res.json();
-        break;
-    }
-    // console.log(result);
-    setIssues(result);
-  };
-
   //dialogs
   const addIssse = () => {
     setAddOpened(true);
@@ -118,6 +91,34 @@ export default function Issue() {
     });
   };
 
+  const checkLabels = async (label) => {
+    let res, result;
+    switch (label) {
+      case "OPEN":
+        res = await fetch("/issue/getOpenIssues?submittedBy=" + submittedBy);
+        result = await res.json();
+        break;
+      case "IN_PROGRESS":
+        res = await fetch("/issue/getInProgressIssues?submittedBy=" + submittedBy);
+        result = await res.json();
+        break;
+      case "WAITING_ON_CLIENT":
+        res = await fetch("/issue/getWaitingOnClientIssues?submittedBy=" + submittedBy);
+        result = await res.json();
+        break;
+      case "RESOLVED":
+        res = await fetch("/issue/getResolvedIssues?submittedBy=" + submittedBy);
+        result = await res.json();
+        break;
+      default:
+        res = await fetch("/issue/getAllIssues?submittedBy=" + submittedBy);
+        result = await res.json();
+        break;
+    }
+    // console.log(result);
+    setIssues(result);
+  };
+
   return (
     <Container>
       <Paper elevation={3} style={paperStyle}>
@@ -138,7 +139,7 @@ export default function Issue() {
 
         <div style={{ display: "flex", marginBottom: "24px", width: "100%" }}>
           <div style={{ margin: "0 8px", textAlign: "left", width: "80%", display: "inline-flex" }}>
-            <div style={{ fontSize: "24px", fontWeight:"bold" }}>All Issues : </div>
+            <div style={{ fontSize: "24px", fontWeight: "bold" }}>All Issues : </div>
             <Button variant="outlined" color="primary" style={{ marginLeft: "16px" }}
               onClick={async (e) => await checkLabels("ALL")} >
               Reset
@@ -150,6 +151,10 @@ export default function Issue() {
           </div>
 
           <div style={{ margin: "0 8px", textAlign: "right", width: "20%" }}>
+            {/* <button class="g-recaptcha"
+              data-sitekey="reCAPTCHA_site_key"
+              data-callback='onSubmit'
+              data-action='submit'>Submit</button> */}
             <Button variant="contained" color="primary"
               onClick={() => addIssse()}>
               + Add Issue

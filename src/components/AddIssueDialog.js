@@ -11,8 +11,21 @@ import { Box, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/mate
 import { getPieData } from "../state/actions";
 import { getIssueListData } from "../state/actions";
 import { useSelector, useDispatch } from "react-redux";
+import Recaptcha from 'react-google-invisible-recaptcha';
+import { GoogleReCaptcha, GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3";
+
+// constructor( props ) {
+//   super( props );
+//   this.state = { value: '' };
+//   this.onSubmit = this.onSubmit.bind( this );
+//   this.onResolved = this.onResolved.bind( this );
+// }
+
+
+
 
 export default function FormDialog({ opened, setOpened }) {
+
   const dispatch = useDispatch();
   const filterTypeData = useSelector((state => state.data.issueListType));
   const [nextIssueId, setRes] = useState("");
@@ -20,8 +33,8 @@ export default function FormDialog({ opened, setOpened }) {
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const submittedBy = useSelector((state => state.authData.email));
-
   const [open, setOpen] = React.useState(false);
+  const [token, setToken] = useState();
 
   useEffect(() => {
     (async () => {
@@ -32,7 +45,7 @@ export default function FormDialog({ opened, setOpened }) {
     setOpen(opened);
   }, [opened]);
 
-  
+
 
   //form validation
   // state = {
@@ -54,6 +67,19 @@ export default function FormDialog({ opened, setOpened }) {
   //   });
   // }
 
+  const onSubmit = () => {
+    if ('' == this.state.value) {
+      alert('Validation failed! Input cannot be empty.');
+      this.recaptcha.reset();
+    } else {
+      this.recaptcha.execute();
+    }
+  }
+  const onResolved = () => {
+    alert('Recaptcha resolved with response: ' + this.recaptcha.getResponse());
+  }
+
+
   const handleClose = () => {
     setOpened(false)
   };
@@ -74,6 +100,28 @@ export default function FormDialog({ opened, setOpened }) {
       getIssueListData({ filterTypeData })(dispatch);
     });
     setOpened(false)
+  };
+
+  const YourReCaptchaComponent = () => {
+    const { executeRecaptcha } = useGoogleReCaptcha();
+
+    // Create an event handler so you can call the verification on button click event or form submit
+    const handleReCaptchaVerify = React.useCallback(async () => {
+      if (!executeRecaptcha) {
+        console.log('Execute recaptcha not yet available');
+        return;
+      }
+
+      const token = await executeRecaptcha('yourAction');
+      // Do whatever you want with the token
+    }, []);
+
+    // You can use useEffect to trigger the verification as soon as the component being loaded
+    useEffect(() => {
+      handleReCaptchaVerify();
+    }, [handleReCaptchaVerify]);
+
+    return <button onClick={handleReCaptchaVerify}>Verify recaptcha</button>;
   };
 
   return (
@@ -143,9 +191,13 @@ export default function FormDialog({ opened, setOpened }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClickSave}>Save</Button>
+          <GoogleReCaptchaProvider reCaptchaKey="[6LfXpLseAAAAACPwt5u9Kxl_VE6fUG7X_KqPGkMG]">
+            {/* <YourReCaptchaComponent /> */}
+            <Button onClick={handleClickSave}>Save</Button>
+          </GoogleReCaptchaProvider>
         </DialogActions>
       </Dialog>
     </div>
+
   );
 }

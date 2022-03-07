@@ -3,8 +3,13 @@ import PieChart from "./PieChart";
 import Issue from "./Issue";
 import { useSelector } from "react-redux";
 import { Typography } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
+import Footer from './Footer'
 
 function Home() {
+
+  const navigate = useNavigate();
+
   const authenticated = useSelector(
     ({ authData: { authenticated } }) => authenticated
   );
@@ -13,6 +18,7 @@ function Home() {
       <AppBar />
       {authenticated ? (
         <>
+        {/* <button onClick={() => {navigate("./filteredIssueList")}}></button> */}
           <div className="paper-arrange-horizontal">
             <PieChart />
           </div>
@@ -21,8 +27,10 @@ function Home() {
           <div className="paper-arrange-horizontal">
             <Issue />
           </div>
+          
         </>
       ) : (
+        //else part
         <Typography><div style={{
           height: "600px",
           transform: "translateY(50%)",
@@ -32,6 +40,7 @@ function Home() {
         }}>Please Login!</div>
         </Typography>
       )}
+      <Footer />
     </div>
   );
 }
